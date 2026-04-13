@@ -1,0 +1,254 @@
+{
+  "practice": "Odin House Dental Surgery",
+  "practice_address": "3/8 Odin Rd, Innaloo WA 6018",
+  "placeholders": {
+    "dental_implants": {
+      "procedure_ref": "implant procedure",
+      "service_context": "implant surgery"
+    },
+    "all_on_four": {
+      "procedure_ref": "All-on-4 procedure",
+      "service_context": "All-on-4 surgery"
+    },
+    "cosmetic_dentist": {
+      "procedure_ref": "cosmetic dental appointment",
+      "service_context": "cosmetic dental procedure"
+    },
+    "dentist_in": {
+      "procedure_ref": "appointment",
+      "service_context": "dental procedure"
+    }
+  },
+  "blocks": [
+    {
+      "suburb": "Balcatta",
+      "heading": "Getting to Odin House Dental from Balcatta",
+      "geo_block": "Balcatta is about 6.8 km north-east of Odin House Dental in Innaloo, roughly 11 minutes by car via Jones St and Delawney St. You'll find us at 3/8 Odin Rd, Innaloo, on the ground floor with parking directly out front, so there are no stairs or lifts to navigate after your {{procedure_ref}}.\n\nIf you're having IV sedation for your {{service_context}}, someone will need to drive you home to Balcatta afterward. For procedures under local anaesthetic, you're fine to drive yourself. Should you need antibiotics or pain relief after your appointment, Discount Drug Store Innaloo at A & B, 52 Ellen Stirling Blvd is close to the practice before you head home.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Balga",
+      "heading": "Getting to Odin House Dental from Balga",
+      "geo_block": "From Balga, Odin House Dental is around 8.9 km south-west, about 15 minutes by car via Princess Rd, Amberley Way, and Wanneroo Rd. Our practice sits at 3/8 Odin Rd, Innaloo, with ground-floor access and parking right out front, making arrival straightforward before your {{procedure_ref}}.\n\nPatients travelling back to Balga after IV sedation for their {{service_context}} will need a driver for the return trip. Local anaesthetic procedures won't affect your ability to drive home. If you're prescribed antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your route back.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Carine",
+      "heading": "Getting to Odin House Dental from Carine",
+      "geo_block": "Carine residents can reach Odin House Dental in about 13 minutes, travelling roughly 8.5 km south-east via Everingham St, Holmesfield Cres, and Reid Hwy. Our clinic at 3/8 Odin Rd, Innaloo is ground floor with parking directly out front, so you won't face stairs or lifts after your {{procedure_ref}}.\n\nIf your {{service_context}} involves IV sedation, please arrange for someone to drive you home to Carine afterward. Procedures under local anaesthetic won't affect your ability to drive. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is handy for picking up any prescribed antibiotics or pain relief on your way home.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Churchlands",
+      "heading": "Getting to Odin House Dental from Churchlands",
+      "geo_block": "Churchlands is just 2.9 km south of our Innaloo practice, around 5 minutes by car via Pearson St and State Route 64. At 3/8 Odin Rd, Innaloo, Odin House Dental offers ground-floor access with parking right outside the door, keeping things simple after your {{procedure_ref}}.\n\nThe short drive home to Churchlands still requires a companion if you've had IV sedation for your {{service_context}}. Under local anaesthetic, you're fine to drive yourself back. If you need antibiotics or pain relief afterward, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is a brief stop before heading home.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "City Beach",
+      "heading": "Getting to Odin House Dental from City Beach",
+      "geo_block": "City Beach is roughly 6.3 km south-west of Odin House Dental, about 10 minutes by car via The Blvd and State Route 72. Our practice at 3/8 Odin Rd, Innaloo has ground-floor access and parking out front, so you can walk straight in for your {{procedure_ref}} without dealing with stairs or lifts.\n\nPlanning to return to City Beach after IV sedation for your {{service_context}}? You'll need someone to drive you. Local anaesthetic procedures won't restrict your driving. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is a quick stop for any prescribed antibiotics or pain relief before you head home.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Coolbinia",
+      "heading": "Getting to Odin House Dental from Coolbinia",
+      "geo_block": "Travelling from Coolbinia, our Innaloo practice is about 6.4 km north-west, roughly 13 minutes by car via Carnarvon Cres, Koorda St, and Elma St. Odin House Dental at 3/8 Odin Rd, Innaloo is ground floor with parking directly out front, meaning no stairs or lifts after your {{procedure_ref}}.\n\nIf your {{service_context}} requires IV sedation, a companion will need to drive you back to Coolbinia. Under local anaesthetic, you can drive yourself home without issue. Should you be prescribed antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is along your route.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Daglish",
+      "heading": "Getting to Odin House Dental from Daglish",
+      "geo_block": "Daglish patients can reach Odin House Dental in around 13 minutes, covering 7.6 km north-west via Stubbs Terrace, Luth Ave, and Nash St. We're at 3/8 Odin Rd, Innaloo, with ground-floor entry and parking right outside, so there are no stairs or lifts to manage after your {{procedure_ref}}.\n\nHeading back to Daglish after IV sedation for your {{service_context}} means you'll need a driver for the trip home. Procedures under local anaesthetic won't affect your ability to drive. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is a useful stop for collecting any prescribed antibiotics or pain relief.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Dianella",
+      "heading": "Getting to Odin House Dental from Dianella",
+      "geo_block": "Dianella is approximately 9.8 km north-east of our Innaloo practice, around 17 minutes by car via The Strand, Booker St, and Morley Dr. At 3/8 Odin Rd, Innaloo, Odin House Dental provides ground-floor access with parking out front, so your arrival for a {{procedure_ref}} is straightforward.\n\nThe drive back to Dianella after IV sedation for your {{service_context}} requires a companion behind the wheel. If you've had only local anaesthetic, you're safe to drive yourself. For any prescribed antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is a quick stop on the way home.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Doubleview",
+      "heading": "Getting to Odin House Dental from Doubleview",
+      "geo_block": "Doubleview sits just 1.7 km west of Odin House Dental, only about 3 minutes by car via Lynton St, Ewen St, and Bowra Ave. Our clinic at 3/8 Odin Rd, Innaloo has ground-floor access and parking directly out front, making it easy to get in and out for your {{procedure_ref}}.\n\nEven with Doubleview so close, you'll still need a driver if you've had IV sedation for your {{service_context}}. Local anaesthetic procedures won't affect your ability to drive home. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is practically next door for picking up any prescribed antibiotics or pain relief.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Duncraig",
+      "heading": "Getting to Odin House Dental from Duncraig",
+      "geo_block": "Duncraig is about 10.1 km north-west of Odin House Dental in Innaloo, roughly 12 minutes by car via Warwick Rd and State Route 81. You'll find us at 3/8 Odin Rd, Innaloo, with ground-floor access and parking directly out front so there are no stairs to navigate after your {{procedure_ref}}.\n\nIf you're having IV sedation for your {{service_context}}, someone will need to drive you back to Duncraig afterward. Local anaesthetic procedures are fine to drive home from. Should you need antibiotics or pain relief after your appointment, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your route home from the practice.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Floreat",
+      "heading": "Getting to Odin House Dental from Floreat",
+      "geo_block": "From Floreat, Odin House Dental is around 5.6 km north via Oceanic Dr, Ulster Rd, and The Blvd, putting you in our chair in about 9 minutes. Our practice at 3/8 Odin Rd, Innaloo is ground floor with parking right outside the door, so getting in and out after your {{procedure_ref}} is straightforward.\n\nFloreat patients having IV sedation for their {{service_context}} will need a companion to drive them home. Under local anaesthetic you're fine to drive yourself. If you're prescribed antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is a short detour on your way back to Floreat.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Girrawheen",
+      "heading": "Getting to Odin House Dental from Girrawheen",
+      "geo_block": "Girrawheen sits about 14.5 km north-east of our Innaloo practice, around 18 minutes by car via Girrawheen Ave, Marangaroo Dr, and State Route 81. We're at 3/8 Odin Rd, Innaloo, with ground-floor access and parking directly out front, making it easy to get in and out after your {{procedure_ref}}.\n\nPatients from Girrawheen who choose IV sedation for their {{service_context}} must arrange a driver for the trip home. If your procedure is under local anaesthetic, you can drive yourself. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on the route back to Girrawheen for any prescribed antibiotics or pain relief.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Glendalough",
+      "heading": "Getting to Odin House Dental from Glendalough",
+      "geo_block": "Glendalough is just 3.5 km south-east of Odin House Dental, roughly 8 minutes via Harborne St and Scarborough Beach Rd. Our clinic at 3/8 Odin Rd, Innaloo has ground-floor access and parking right at the front door, so there are no stairs or lifts to deal with after your {{procedure_ref}}.\n\nBeing so close to our practice, Glendalough patients find the trip home quick and easy. If you're having IV sedation for your {{service_context}}, you will still need someone else to drive. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your way home for any prescribed antibiotics or pain relief.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Greenwood",
+      "heading": "Getting to Odin House Dental from Greenwood",
+      "geo_block": "Greenwood is approximately 11.3 km north-east of our Innaloo practice, about 13 minutes by car via Blackall Dr, Allenswood Rd, and Warwick Rd. Our clinic at 3/8 Odin Rd, Innaloo is ground floor with parking directly outside, so you won't face stairs or lifts after your {{procedure_ref}}.\n\nGreenwood patients undergoing IV sedation for their {{service_context}} will need someone to drive them home afterward. Procedures under local anaesthetic are fine to drive home from. If you're prescribed antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is along the way back to Greenwood.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Gwelup",
+      "heading": "Getting to Odin House Dental from Gwelup",
+      "geo_block": "Gwelup is only 4.3 km north of Odin House Dental, around 7 minutes via Porter St, N Beach Rd, and Karrinyup Rd. You'll find our practice at 3/8 Odin Rd, Innaloo, with ground-floor entry and parking right out front, making post-appointment access simple after your {{procedure_ref}}.\n\nGwelup patients opting for IV sedation during their {{service_context}} will need a driver for the short trip home. Under local anaesthetic, you're fine to drive yourself. If your dentist prescribes antibiotics or pain relief, Cedric Street Pharmacy at F1/31 Cedric St in Stirling is on your way back to Gwelup.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Hamersley",
+      "heading": "Getting to Odin House Dental from Hamersley",
+      "geo_block": "Hamersley is about 7.5 km north-east of our Innaloo practice, roughly 14 minutes by car via Erindale Rd, Eglinton Cres, and N Beach Rd. We're at 3/8 Odin Rd, Innaloo, ground floor with parking directly out front, so there are no stairs to manage after your {{procedure_ref}}.\n\nIf you're having IV sedation for your {{service_context}}, a companion will need to drive you back to Hamersley afterward. Local anaesthetic procedures are fine to drive home from. Should you need antibiotics or pain relief filled on the way, Cedric Street Pharmacy at F1/31 Cedric St in Stirling is along your route.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Herdsman",
+      "heading": "Getting to Odin House Dental from Herdsman",
+      "geo_block": "Herdsman is just 1.7 km south-east of Odin House Dental, only about 4 minutes via Jon Sanders Dr and Stephenson Ave. That makes our practice at 3/8 Odin Rd, Innaloo one of the closest dental clinics to Herdsman, with ground-floor access and parking right at the front door for easy arrival and departure after your {{procedure_ref}}.\n\nEven with the short distance, Herdsman patients having IV sedation for their {{service_context}} still need a driver to get home. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is practically on your doorstep for any prescribed antibiotics or pain relief.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Innaloo",
+      "heading": "Odin House Dental in Innaloo",
+      "geo_block": "Odin House Dental is right here in Innaloo at 3/8 Odin Rd, making us a local option for Innaloo residents. Many of our Innaloo patients are just a short walk or a 2-minute drive from home. The clinic is ground floor with parking directly out front, so there's nothing to navigate before or after your {{procedure_ref}}.\n\nIf your {{service_context}} requires IV sedation, you'll still need someone to take you home even though the trip is short. Under local anaesthetic, walking home is an option for many Innaloo patients. For any prescribed antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is just down the road.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Jolimont",
+      "heading": "Getting to Odin House Dental from Jolimont",
+      "geo_block": "Jolimont is around 6.9 km south-east of Odin House Dental in Innaloo, about 11 minutes by car via Hay St and State Route 65. Our practice at 3/8 Odin Rd, Innaloo offers ground-floor access with parking directly outside, so you won't need to navigate stairs or lifts after your {{procedure_ref}}.\n\nJolimont patients who opt for IV sedation during their {{service_context}} must have someone available to drive them home. Under local anaesthetic, you can drive yourself without issue. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your way back to Jolimont for any prescribed antibiotics or pain relief.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Joondanna",
+      "heading": "Getting to Odin House Dental from Joondanna",
+      "geo_block": "Joondanna is just 5.0 km south-east of Odin House Dental in Innaloo, about 11 minutes by car via Powell St, Stoneham St, and Green St. You'll find us at 3/8 Odin Rd, Innaloo, with ground-floor access and parking directly out front so there's nothing to navigate after your {{procedure_ref}}.\n\nIf your {{service_context}} involves IV sedation, you'll need a companion to drive you back to Joondanna afterward. Local anaesthetic procedures are fine for driving yourself home. Should you need antibiotics or pain relief after your visit, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your route.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Karrinyup",
+      "heading": "Getting to Odin House Dental from Karrinyup",
+      "geo_block": "From Karrinyup, Odin House Dental is only 4.2 km south-east and around 7 minutes by car via Karrinyup Rd and State Route 76. Our practice at 3/8 Odin Rd, Innaloo sits at ground level with parking right outside the door, making arrival straightforward before your {{procedure_ref}}.\n\nDriving yourself home to Karrinyup is fine after procedures under local anaesthetic. If you're having IV sedation as part of your {{service_context}}, bring someone along to drive you back. For any prescribed antibiotics or pain medication, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is between our clinic and Karrinyup.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Leederville",
+      "heading": "Getting to Odin House Dental from Leederville",
+      "geo_block": "Leederville sits 7.3 km south-east of our Innaloo practice, roughly 12 minutes by car via Bourke St, Oxford St, and Anzac Rd. Our clinic at 3/8 Odin Rd, Innaloo has ground-floor access with parking directly out front, so you won't face stairs or lifts after your {{procedure_ref}}.\n\nFor procedures under local anaesthetic, you're fine to drive yourself back to Leederville. If your {{service_context}} requires IV sedation, arrange for someone to take you home afterward. Should you be prescribed antibiotics or pain relief following your appointment, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your way.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Marmion",
+      "heading": "Getting to Odin House Dental from Marmion",
+      "geo_block": "Marmion is 9.6 km north-west of Odin House Dental, about 14 minutes by car via Sheppard Way, Sheahan Way, and Parnell Ave. Our practice at 3/8 Odin Rd, Innaloo offers ground-floor entry and parking right at the door, so there are no stairs to manage after your {{procedure_ref}}.\n\nIf you're booked for IV sedation as part of your {{service_context}}, someone will need to drive you home to Marmion afterward. Procedures under local anaesthetic allow you to drive yourself. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is along your route home for any prescribed antibiotics or pain relief.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Menora",
+      "heading": "Getting to Odin House Dental from Menora",
+      "geo_block": "Getting to Odin House Dental from Menora takes about 15 minutes by car, covering 7.9 km via Alexander Dr and State Route 56. We're at 3/8 Odin Rd, Innaloo, with ground-floor access and parking directly outside the entrance for easy arrival before your {{procedure_ref}}.\n\nAfter procedures under local anaesthetic, you can drive yourself back to Menora without issue. IV sedation for your {{service_context}} means you'll need someone else behind the wheel for the trip home. If you're prescribed antibiotics or pain medication, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your return route.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Mirrabooka",
+      "heading": "Getting to Odin House Dental from Mirrabooka",
+      "geo_block": "Mirrabooka is 13.0 km north-east of our Innaloo practice, approximately 19 minutes by car via Boyare Ave, Mirrabooka Ave, and Reid Hwy. At 3/8 Odin Rd, Innaloo, our clinic is ground floor with parking out front, meaning no stairs or lifts to deal with after your {{procedure_ref}}.\n\nYou can drive yourself home to Mirrabooka following procedures under local anaesthetic. If your {{service_context}} involves IV sedation, bring someone to drive you back. For any prescribed antibiotics or pain relief, Gwelup Plaza Pharmacy at Shop 3/707-709 N Beach Rd, Gwelup is on your homeward route.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Mount Claremont",
+      "heading": "Getting to Odin House Dental from Mount Claremont",
+      "geo_block": "Mount Claremont is 8.4 km south-west of Odin House Dental, around 13 minutes by car via Mooro Dr and John XXIII Ave. Our practice at 3/8 Odin Rd, Innaloo has ground-level entry and parking right outside, so there are no barriers to navigate after your {{procedure_ref}}.\n\nIf your {{service_context}} involves IV sedation, you'll need a driver for the return trip to Mount Claremont. Under local anaesthetic, driving yourself is fine. Should you need antibiotics or pain relief afterward, Greenleaf Pharmacy Herdsman at 3/1 Flynn St, Churchlands falls along your route home.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Mount Hawthorn",
+      "heading": "Getting to Odin House Dental from Mount Hawthorn",
+      "geo_block": "Mount Hawthorn is a short 4.6 km south-east of our Innaloo clinic, about 10 minutes by car via Scarborough Beach Rd and Kalgoorlie St. You'll find Odin House Dental at 3/8 Odin Rd, Innaloo, at ground level with parking directly at the front door for a smooth arrival before your {{procedure_ref}}.\n\nDriving home to Mount Hawthorn after local anaesthetic procedures is no problem. For IV sedation as part of your {{service_context}}, arrange for someone to drive you back. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your way if you need antibiotics or pain relief.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Nollamara",
+      "heading": "Getting to Odin House Dental from Nollamara",
+      "geo_block": "From Nollamara, our Innaloo practice is 7.9 km south-west and about 14 minutes by car via Nollamara Ave, Flinders St, and Wanneroo Rd. Odin House Dental at 3/8 Odin Rd, Innaloo is ground floor with parking right outside, so getting in and out after your {{procedure_ref}} is straightforward.\n\nLocal anaesthetic procedures allow you to drive yourself back to Nollamara without concern. If your {{service_context}} requires IV sedation, have someone available to take you home. For any prescribed antibiotics or pain medication, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is along your return route.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "North Beach",
+      "heading": "Getting to Odin House Dental from North Beach",
+      "geo_block": "North Beach is about 8.0 km north-west of Odin House Dental in Innaloo, roughly 14 minutes by car via North Beach Rd, West Coast Dr, and Karrinyup Rd. You'll find us at 3/8 Odin Rd, Innaloo, with ground-floor access and parking directly out front so there's nothing to navigate after your {{procedure_ref}}.\n\nIf you're having IV sedation for your {{service_context}}, a companion will need to drive you back to North Beach afterward. Local anaesthetic procedures won't affect your ability to drive home. Should you need antibiotics or pain relief filled on the way, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is along your route.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "North Perth",
+      "heading": "Getting to Odin House Dental from North Perth",
+      "geo_block": "From North Perth, Odin House Dental is around 7.1 km to the north-west, about 14 minutes via Charles St and State Route 60. Our practice at 3/8 Odin Rd, Innaloo sits at ground level with parking right outside the door, making arrival and departure straightforward after your {{procedure_ref}}.\n\nPatients travelling back to North Perth after IV sedation for their {{service_context}} must have a driver with them. Under local anaesthetic you're fine to drive yourself. If your dentist prescribes antibiotics or pain medication, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your way home.\n\nWe accept referrals from GPs throughout the Stirling area. Get in touch with our team for a referral pack."
+    },
+    {
+      "suburb": "Osborne Park",
+      "heading": "Getting to Odin House Dental from Osborne Park",
+      "geo_block": "Osborne Park sits just 2.8 km east of our Innaloo practice, making the drive to Odin House Dental only about 6 minutes via Hutton St and Scarborough Beach Rd. We're at 3/8 Odin Rd, Innaloo, ground floor with parking directly out front, so you can walk straight in for your {{procedure_ref}}.\n\nBecause Osborne Park is so close, arranging a lift home after IV sedation for your {{service_context}} is simple. If you're having local anaesthetic only, you can drive yourself without issue. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is virtually on your doorstep for any prescriptions afterward.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Scarborough",
+      "heading": "Getting to Odin House Dental from Scarborough",
+      "geo_block": "Scarborough is roughly 4.5 km north-west of Odin House Dental, about 8 minutes by car via West Coast Hwy and State Route 71. Our clinic at 3/8 Odin Rd, Innaloo has ground-floor entry and parking right at the front door, so there are no stairs or lifts to manage after your {{procedure_ref}}.\n\nIf your {{service_context}} involves IV sedation, you'll need someone to drive you home to Scarborough. Procedures under local anaesthetic won't restrict you from driving. For any prescribed antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is a short detour on your return trip.\n\nWe accept referrals from GPs throughout the Stirling area. Reach out to our team for a referral pack."
+    },
+    {
+      "suburb": "Shenton Park",
+      "heading": "Getting to Odin House Dental from Shenton Park",
+      "geo_block": "Travelling from Shenton Park, Odin House Dental is about 8.1 km to the north-west, roughly 14 minutes via Herbert Rd, Onslow Rd, and Nicholson Rd. Our practice is at 3/8 Odin Rd, Innaloo, at ground level with parking directly outside, so there's easy access before and after your {{procedure_ref}}.\n\nShenton Park patients having IV sedation for their {{service_context}} will need a driver for the trip home. Local anaesthetic procedures won't affect your ability to get behind the wheel. If you're prescribed antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is along the route back.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Stirling",
+      "heading": "Getting to Odin House Dental from Stirling",
+      "geo_block": "Stirling is only 3.4 km north-east of our Innaloo practice, a quick 7-minute drive via Cedric St and State Route 64. Odin House Dental at 3/8 Odin Rd, Innaloo offers ground-floor access with parking out front, keeping things straightforward when you arrive for your {{procedure_ref}}.\n\nThe short distance between Stirling and our clinic makes organising a driver simple if you're having IV sedation for your {{service_context}}. Under local anaesthetic, driving yourself is perfectly fine. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is just moments away for filling any prescriptions afterward.\n\nWe welcome referrals from GPs across the Stirling area. Get in touch with our practice for a referral pack."
+    },
+    {
+      "suburb": "Subiaco",
+      "heading": "Getting to Odin House Dental from Subiaco",
+      "geo_block": "From Subiaco, Odin House Dental is approximately 7.4 km north-west, around 14 minutes via Hay St and State Route 65. We're located at 3/8 Odin Rd, Innaloo, with ground-floor entry and parking right outside so you won't face stairs or lifts after your {{procedure_ref}}.\n\nSubiaco patients who require IV sedation for their {{service_context}} must arrange someone to drive them home. If your procedure uses local anaesthetic only, you're free to drive. Should your dentist prescribe antibiotics or pain medication, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your homeward route.\n\nWe accept referrals from GPs throughout the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Trigg",
+      "heading": "Getting to Odin House Dental from Trigg",
+      "geo_block": "Trigg is around 6.5 km north-west of our Innaloo practice, about 11 minutes by car via Karrinyup Rd and State Route 76. You'll find Odin House Dental at 3/8 Odin Rd, Innaloo, ground floor with parking directly at the entrance, so getting in and out after your {{procedure_ref}} is hassle-free.\n\nIf you're having IV sedation for your {{service_context}}, a friend or family member will need to drive you back to Trigg. Local anaesthetic won't prevent you from driving home. For any prescriptions after your appointment, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is along your return route.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Tuart Hill",
+      "heading": "Getting to Odin House Dental from Tuart Hill",
+      "geo_block": "Tuart Hill is about 4.6 km east of Odin House Dental, roughly 10 minutes via Royal St, York St, and Hutton St. Our clinic at 3/8 Odin Rd, Innaloo is at ground level with parking out front, meaning no stairs or lifts to contend with after your {{procedure_ref}}.\n\nTuart Hill patients needing IV sedation for their {{service_context}} should bring someone along to handle the drive home. Under local anaesthetic, you're fine to drive yourself both ways. If your dentist prescribes antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is a brief stop on your return journey.\n\nWe accept referrals from GPs throughout the Stirling area. Reach out to our team for a referral pack."
+    },
+    {
+      "suburb": "Warwick",
+      "heading": "Getting to Odin House Dental from Warwick",
+      "geo_block": "Warwick is approximately 10.5 km north-east of our Innaloo practice, around 12 minutes by car via Dorchester Ave, Badrick St, and Warwick Rd. Odin House Dental at 3/8 Odin Rd, Innaloo has ground-floor access and parking right at the front, so you can step straight out after your {{procedure_ref}}.\n\nIf your {{service_context}} requires IV sedation, someone will need to drive you home to Warwick afterward. Procedures under local anaesthetic won't affect your ability to drive. Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on the way for filling any prescriptions your dentist provides.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Watermans Bay",
+      "heading": "Getting to Odin House Dental from Watermans Bay",
+      "geo_block": "Watermans Bay is around 9.7 km north-west of our Innaloo practice, a drive of about 15 minutes via Mary St, Beach Rd, and Beach Rd West. You'll find us at 3/8 Odin Rd, Innaloo, with ground-floor access and parking directly out front so there's nothing to navigate after your {{procedure_ref}}.\n\nIf you're travelling from Watermans Bay for IV sedation as part of your {{service_context}}, a companion will need to drive you home afterward. Local anaesthetic procedures won't affect your ability to drive. Should you need antibiotics or pain relief after your visit, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your route home.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Wembley",
+      "heading": "Getting to Odin House Dental from Wembley",
+      "geo_block": "From Wembley, our Innaloo practice is roughly 5.4 km north-west and takes about 9 minutes by car via Grantham St and State Route 72. We're at 3/8 Odin Rd, Innaloo, on the ground floor with parking right outside the door, so you won't face stairs or lifts after your {{procedure_ref}}.\n\nWembley patients booked for IV sedation during their {{service_context}} will need a driver for the short trip home. Under local anaesthetic, you're fine to drive yourself back. If your dentist prescribes antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is just moments from the clinic.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Wembley Downs",
+      "heading": "Getting to Odin House Dental from Wembley Downs",
+      "geo_block": "Wembley Downs sits just 4.1 km south-west of our practice, making the drive to Odin House Dental roughly 7 minutes via Hale Rd, Pearson St, and State Route 64. Our clinic at 3/8 Odin Rd, Innaloo is ground floor with parking directly out front, so access is straightforward after your {{procedure_ref}}.\n\nWembley Downs patients having IV sedation for their {{service_context}} must arrange a driver to take them home. If you're having local anaesthetic only, you can drive yourself. For any prescribed antibiotics or pain medication, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is between the clinic and your route home.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "West Leederville",
+      "heading": "Getting to Odin House Dental from West Leederville",
+      "geo_block": "West Leederville is about 8.9 km south-east of our Innaloo clinic, roughly 11 minutes by car via Woolwich St, Kimberley St, and Lake Monger Dr. Our practice at 3/8 Odin Rd, Innaloo has ground-floor entry and parking right at the door, so there are no stairs to manage after your {{procedure_ref}}.\n\nWest Leederville patients receiving IV sedation for their {{service_context}} will need someone to drive them home afterward. Procedures under local anaesthetic won't restrict you from driving. If you're given a script for antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is just near the practice.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "West Perth",
+      "heading": "Getting to Odin House Dental from West Perth",
+      "geo_block": "From West Perth, our Innaloo practice is approximately 9.7 km north-west and about 10 minutes by car via Sutherland St and Railway St. You'll find us at 3/8 Odin Rd, Innaloo, where ground-floor access and front-door parking mean no obstacles after your {{procedure_ref}}.\n\nIf your {{service_context}} involves IV sedation, you'll need someone to drive you back to West Perth once the appointment is done. Local anaesthetic patients are fine to drive themselves. Any prescribed antibiotics or pain relief can be collected from Chemist Warehouse Innaloo at 380A Scarborough Beach Rd on your way out.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Westminster",
+      "heading": "Getting to Odin House Dental from Westminster",
+      "geo_block": "Westminster is about 7.7 km north-east of our Innaloo practice, roughly 14 minutes by car via Arkana Rd, Wanneroo Rd, and State Route 60. Our clinic is at 3/8 Odin Rd, Innaloo. It's ground floor with parking directly out front, so there are no stairs or lifts to deal with after your {{procedure_ref}}.\n\nIf you're having IV sedation for your {{service_context}}, you'll need someone to drive you home to Westminster afterward. For procedures under local anaesthetic, you're fine to drive yourself. If you're prescribed antibiotics or pain relief after your appointment, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is on your way home.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Woodlands",
+      "heading": "Getting to Odin House Dental from Woodlands",
+      "geo_block": "Woodlands is only 1.4 km south of our practice, putting Odin House Dental just 3 minutes away by car via Rosewood Ave, Birchwood Ave, and Bowra Ave. At 3/8 Odin Rd, Innaloo, we offer ground-floor access with parking right outside, so getting in and out after your {{procedure_ref}} is simple.\n\nBecause Woodlands is so close, arranging a driver for IV sedation during your {{service_context}} is especially easy. Under local anaesthetic, you can drive yourself home without any issue. Should you need antibiotics or pain relief, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is moments from the clinic.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    },
+    {
+      "suburb": "Yokine",
+      "heading": "Getting to Odin House Dental from Yokine",
+      "geo_block": "Yokine is around 6.4 km north-east of our Innaloo practice, approximately 13 minutes by car via Flinders St, Villiers St, and Royal St. We're located at 3/8 Odin Rd, Innaloo, with ground-floor entry and parking at the front door, so you won't have to navigate stairs after your {{procedure_ref}}.\n\nYokine patients who require IV sedation as part of their {{service_context}} will need a companion to handle the drive home. Local anaesthetic procedures won't affect your ability to drive back. If you're prescribed antibiotics or pain medication, Chemist Warehouse Innaloo at 380A Scarborough Beach Rd is right near the practice.\n\nWe welcome referrals from GPs across the Stirling area. Contact our practice for a referral pack."
+    }
+  ]
+}

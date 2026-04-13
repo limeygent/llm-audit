@@ -1,0 +1,784 @@
+[
+  {
+    "suburb": "Balcatta",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "11 mins",
+    "drive_distance": "6.8 km",
+    "primary_roads": [
+      "Jones St",
+      "Delawney St",
+      "Erindale Rd"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Discount Drug Store Innaloo",
+      "address": "A & B, 52 Ellen Stirling Blvd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Balga",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "15 mins",
+    "drive_distance": "8.9 km",
+    "primary_roads": [
+      "Princess Rd",
+      "Amberley Way",
+      "Wanneroo Rd"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Carine",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "13 mins",
+    "drive_distance": "8.5 km",
+    "primary_roads": [
+      "Everingham St",
+      "Holmesfield Cres",
+      "Reid Hwy"
+    ],
+    "direction_from_practice": "north-west",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Churchlands",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "5 mins",
+    "drive_distance": "2.9 km",
+    "primary_roads": [
+      "Pearson St",
+      "State Route 64",
+      "Liege St"
+    ],
+    "direction_from_practice": "south",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "City Beach",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "10 mins",
+    "drive_distance": "6.3 km",
+    "primary_roads": [
+      "The Blvd",
+      "State Route 72",
+      "Oban Rd"
+    ],
+    "direction_from_practice": "south-west",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Coolbinia",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "13 mins",
+    "drive_distance": "6.4 km",
+    "primary_roads": [
+      "Carnarvon Cres",
+      "Koorda St",
+      "Elma St"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Daglish",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "13 mins",
+    "drive_distance": "7.6 km",
+    "primary_roads": [
+      "Stubbs Terrace",
+      "Luth Ave",
+      "Nash St"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Dianella",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "17 mins",
+    "drive_distance": "9.8 km",
+    "primary_roads": [
+      "The Strand",
+      "Booker St",
+      "Morley Dr"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Doubleview",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "3 mins",
+    "drive_distance": "1.7 km",
+    "primary_roads": [
+      "Lynton St",
+      "Ewen St",
+      "Bowra Ave"
+    ],
+    "direction_from_practice": "west",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Duncraig",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "12 mins",
+    "drive_distance": "10.1 km",
+    "primary_roads": [
+      "Warwick Rd",
+      "State Route 81",
+      "State Rte 2"
+    ],
+    "direction_from_practice": "north-west",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Floreat",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "9 mins",
+    "drive_distance": "5.6 km",
+    "primary_roads": [
+      "Oceanic Dr",
+      "Ulster Rd",
+      "The Blvd"
+    ],
+    "direction_from_practice": "south",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Girrawheen",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "18 mins",
+    "drive_distance": "14.5 km",
+    "primary_roads": [
+      "Girrawheen Ave",
+      "Marangaroo Dr",
+      "State Route 81"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Glendalough",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "8 mins",
+    "drive_distance": "3.5 km",
+    "primary_roads": [
+      "Harborne St",
+      "Scarborough Beach Rd",
+      "State Route 75"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Greenwood",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "13 mins",
+    "drive_distance": "11.3 km",
+    "primary_roads": [
+      "Blackall Dr",
+      "Allenswood Rd",
+      "Warwick Rd"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Gwelup",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "7 mins",
+    "drive_distance": "4.3 km",
+    "primary_roads": [
+      "Porter St",
+      "N Beach Rd",
+      "Karrinyup Rd"
+    ],
+    "direction_from_practice": "north",
+    "pharmacy": {
+      "name": "Cedric Street Pharmacy",
+      "address": "F1/31 Cedric St, Stirling"
+    }
+  },
+  {
+    "suburb": "Hamersley",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "14 mins",
+    "drive_distance": "7.5 km",
+    "primary_roads": [
+      "Erindale Rd",
+      "Eglinton Cres",
+      "N Beach Rd"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Cedric Street Pharmacy",
+      "address": "F1/31 Cedric St, Stirling"
+    }
+  },
+  {
+    "suburb": "Herdsman",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "4 mins",
+    "drive_distance": "1.7 km",
+    "primary_roads": [
+      "Jon Sanders Dr",
+      "Stephenson Ave",
+      "State Route 64"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Innaloo",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "2 mins",
+    "drive_distance": "1.3 km",
+    "primary_roads": [
+      "Barnes St",
+      "Odin Rd",
+      "Wotan St"
+    ],
+    "direction_from_practice": "north",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Jolimont",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "11 mins",
+    "drive_distance": "6.9 km",
+    "primary_roads": [
+      "Hay St",
+      "State Route 65",
+      "Selby St"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Joondanna",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "11 mins",
+    "drive_distance": "5.0 km",
+    "primary_roads": [
+      "Powell St",
+      "Stoneham St",
+      "Green St"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Karrinyup",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "7 mins",
+    "drive_distance": "4.2 km",
+    "primary_roads": [
+      "Karrinyup Rd",
+      "State Route 76",
+      "Huntriss Rd"
+    ],
+    "direction_from_practice": "north-west",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Leederville",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "12 mins",
+    "drive_distance": "7.3 km",
+    "primary_roads": [
+      "Bourke St",
+      "Oxford St",
+      "Anzac Rd"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Marmion",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "14 mins",
+    "drive_distance": "9.6 km",
+    "primary_roads": [
+      "Sheppard Way",
+      "Sheahan Way",
+      "Parnell Ave"
+    ],
+    "direction_from_practice": "north-west",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Menora",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "15 mins",
+    "drive_distance": "7.9 km",
+    "primary_roads": [
+      "Alexander Dr",
+      "State Route 56",
+      "Walcott St"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Mirrabooka",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "19 mins",
+    "drive_distance": "13.0 km",
+    "primary_roads": [
+      "Boyare Ave",
+      "Mirrabooka Ave",
+      "Reid Hwy"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Gwelup Plaza Pharmacy",
+      "address": "Shop 3/707-709 N Beach Rd, Gwelup"
+    }
+  },
+  {
+    "suburb": "Mount Claremont",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "13 mins",
+    "drive_distance": "8.4 km",
+    "primary_roads": [
+      "Mooro Dr",
+      "John Xxiii Ave",
+      "Brockway Rd"
+    ],
+    "direction_from_practice": "south-west",
+    "pharmacy": {
+      "name": "Greenleaf Pharmacy Herdsman",
+      "address": "3/1 Flynn St, Churchlands"
+    }
+  },
+  {
+    "suburb": "Mount Hawthorn",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "10 mins",
+    "drive_distance": "4.6 km",
+    "primary_roads": [
+      "Scarborough Beach Rd",
+      "Kalgoorlie St",
+      "State Route 75"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Nollamara",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "14 mins",
+    "drive_distance": "7.9 km",
+    "primary_roads": [
+      "Nollamara Ave",
+      "Flinders St",
+      "Wanneroo Rd"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "North Beach",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "14 mins",
+    "drive_distance": "8.0 km",
+    "primary_roads": [
+      "N Beach Rd",
+      "W Coast Dr",
+      "Karrinyup Rd"
+    ],
+    "direction_from_practice": "north-west",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "North Perth",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "14 mins",
+    "drive_distance": "7.1 km",
+    "primary_roads": [
+      "Charles St",
+      "State Route 60",
+      "Waugh St"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Osborne Park",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "6 mins",
+    "drive_distance": "2.8 km",
+    "primary_roads": [
+      "Hutton St",
+      "Scarborough Beach Rd",
+      "State Route 75"
+    ],
+    "direction_from_practice": "east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Scarborough",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "8 mins",
+    "drive_distance": "4.5 km",
+    "primary_roads": [
+      "W Coast Hwy",
+      "State Route 71",
+      "Scarborough Beach Rd"
+    ],
+    "direction_from_practice": "north-west",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Shenton Park",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "14 mins",
+    "drive_distance": "8.1 km",
+    "primary_roads": [
+      "Herbert Rd",
+      "Onslow Rd",
+      "Nicholson Rd"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Stirling",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "7 mins",
+    "drive_distance": "3.4 km",
+    "primary_roads": [
+      "Cedric St",
+      "State Route 64",
+      "Karrinyup Rd"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Subiaco",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "14 mins",
+    "drive_distance": "7.4 km",
+    "primary_roads": [
+      "Hay St",
+      "State Route 65",
+      "Rowland St"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Trigg",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "11 mins",
+    "drive_distance": "6.5 km",
+    "primary_roads": [
+      "Karrinyup Rd",
+      "State Route 76",
+      "Lefroy St"
+    ],
+    "direction_from_practice": "north-west",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Tuart Hill",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "10 mins",
+    "drive_distance": "4.6 km",
+    "primary_roads": [
+      "Royal St",
+      "York St",
+      "Hutton St"
+    ],
+    "direction_from_practice": "east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Warwick",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "12 mins",
+    "drive_distance": "10.5 km",
+    "primary_roads": [
+      "Dorchester Ave",
+      "Badrick St",
+      "Warwick Rd"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Watermans Bay",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "15 mins",
+    "drive_distance": "9.7 km",
+    "primary_roads": [
+      "Mary St",
+      "Beach Rd",
+      "Beach Rd West"
+    ],
+    "direction_from_practice": "north-west",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Wembley",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "9 mins",
+    "drive_distance": "5.4 km",
+    "primary_roads": [
+      "Grantham St",
+      "State Route 72",
+      "Selby St"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Wembley Downs",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "7 mins",
+    "drive_distance": "4.1 km",
+    "primary_roads": [
+      "Hale Rd",
+      "Pearson St",
+      "State Route 64"
+    ],
+    "direction_from_practice": "south-west",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "West Leederville",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "11 mins",
+    "drive_distance": "8.9 km",
+    "primary_roads": [
+      "Woolwich St",
+      "Kimberley St",
+      "Lake Monger Dr"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "West Perth",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "10 mins",
+    "drive_distance": "9.7 km",
+    "primary_roads": [
+      "Sutherland St",
+      "Railway St",
+      "Roe St"
+    ],
+    "direction_from_practice": "south-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Westminster",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "14 mins",
+    "drive_distance": "7.7 km",
+    "primary_roads": [
+      "Arkana Rd",
+      "Wanneroo Rd",
+      "State Route 60"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Woodlands",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "3 mins",
+    "drive_distance": "1.4 km",
+    "primary_roads": [
+      "Rosewood Ave",
+      "Birchwood Ave",
+      "Bowra Ave"
+    ],
+    "direction_from_practice": "south",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  },
+  {
+    "suburb": "Yokine",
+    "practice": "Odin House Dental Surgery",
+    "practice_address": "3/8 Odin Rd, Innaloo WA 6018, Australia",
+    "drive_minutes": "13 mins",
+    "drive_distance": "6.4 km",
+    "primary_roads": [
+      "Flinders St",
+      "Villiers St",
+      "Royal St"
+    ],
+    "direction_from_practice": "north-east",
+    "pharmacy": {
+      "name": "Chemist Warehouse Innaloo",
+      "address": "380A Scarborough Beach Rd, Innaloo"
+    }
+  }
+]
