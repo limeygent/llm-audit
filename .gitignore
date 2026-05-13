@@ -1,3 +1,23 @@
+# OS / editor
+.DS_Store
+
+# Local environment
 .env
-.claude-context/
 .claude/
+.claude-context/
+
+# Internal roadmap (references private infra — keep local only)
+NEXT-STEPS.md
+
+# Skill drafts and fine-tuning work product (local-only, not needed to run the skill)
+drafts/
+fine-tuning/
+
+# Generated audit run outputs
+runs/
+
+# Leftover scripts from unrelated dental/geo project (not referenced by skill.md or RUNNING.md)
+extract.py
+push_geo_blocks.py
+suburb_research.py
+suburb_data/
