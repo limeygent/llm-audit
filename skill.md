@@ -28,6 +28,8 @@ Audit a web page (HTML or markdown) for AI-search retrieval, ranking, and citati
 3. Protected compliance content (FDA disclaimers, AHPRA hedging, legal location disclaimers, financial disclosures) is preserved verbatim and recorded with `rewrite_permissions` so the rewriter cannot strip it.
 4. The same input run through any frontier LLM produces ≥70% finding overlap on top-N CRITICAL findings — the spec is mechanical, not interpretive.
 5. The rewriter receives a `rewrite_brief` with dominant gate, target length range, keep/merge/cut sections, a unique-angle recommendation, and a `do_not_do` list.
+6. The audit emits a `validation_plan` — a 10–20 prompt corpus derived from the fan-out set — so the operator can measure actual citation outcomes across engines before and after the rewrite ships. Rubric compliance is a *proxy*; observed citations are the truth. An audit whose recommendations can't be checked against reality is an opinion.
+7. Every empirical constant the audit applies (grounding-coverage figures, page-length bands, fingerprint markers, fan-out counts) is used with its provenance in mind — constants are dated snapshots of specific systems, and outputs derived from them are labeled indicative, not authoritative.
 
 The audit's downstream consumer is an LLM rewriter (e.g. `llm-rewrite`). Both the markdown and the JSON are required output.
 
@@ -59,9 +61,10 @@ Content optimised for LLM citation is also well-structured, entity-dense, query-
 
 ## What this skill does
 
+0. Records source authority & machine-access preconditions (Step 0) — what's observable on-page, plus an explicit checklist of off-page signals the audit cannot verify from copy
 1. Detects industry mode (healthcare or standard)
 2. Maps Zone 1 (first ~20%), checks page length, and assesses section integrity across all Body sections
-3. Checks reader flow, search intent logic, multi-intent coverage, and multi-hop reasoning chains
+3. Checks reader flow, search intent logic, **query fan-out coverage**, multi-intent coverage, and multi-hop reasoning chains
 4. Runs a competitive differentiation check (what, who, what job, what constraint)
 5. Runs a content format audit (tables / lists / paragraphs / headings)
 6. Runs a DRY (Don't Repeat Yourself) check
@@ -113,6 +116,67 @@ A page can pass Gate 1 (retrieved) and fail Gate 3 (never cited) because it has 
 
 - **Turnbull (2026):** 📚 *Established IR principle.* Semantic search systems don't just measure similarity — they also need to match (include or exclude). Precise categorical language ("semi-automatic espresso machine" not "coffee maker") gives retrieval systems more to work with. This is well-established in information retrieval literature, not a novel claim.
 
+**The 2026 measurement wave (dated practitioner data unless noted):**
+
+- **Query fan-out (platform-official + practitioner, 2025–2026):** Google officially describes AI Mode issuing "dozens" of synthetic sub-queries per prompt (I/O 2025; patent US 2024/0289407). Observed: ~3x query expansion, ~95% of fan-out queries with zero traditional search volume, and roughly a third of ChatGPT-cited pages surfacing only for fan-out sub-queries — never the head query (548K-page study, 2026-Q2). This is the empirical basis for the fan-out coverage step.
+- **First-passage decay, cross-engine (2026):** 44.2% of ChatGPT citations come from the first 30% of the page (1.2M answers / 18K verified citations). Independent corroboration of the Zone 1 first-passage model from a non-Google engine.
+- **Sentence-level extraction (2026-Q1):** grounding payloads are assembled from individual sentences (~15 words average), with a roughly fixed per-query budget (~1,900–2,000 words) and per-page extraction plateauing near ~540 words. Single-source (DEJAN), unreplicated — treat numbers as indicative; the sentence-as-unit finding is what underpins the anchorable-statement doctrine.
+- **Organic-overlap collapse (2025–2026):** per-citation overlap between AI answers and organic top-10 fell from ~76% (2025-Q3) to ~32–38% (2026-Q1), varies sharply by surface (AI Mode: ~88% of citations NOT in top-10). Any single overlap number without date + surface is wrong by construction.
+- **Brand-mention correlation (2025):** breadth of branded web mentions is the strongest measured correlate of AI-answer brand presence (ρ≈0.66, 75K brands) — far ahead of backlinks (ρ≈0.22) and marquee news placements (r≈0.07).
+- **Schema null result (2026-05):** the only controlled study (diff-in-diff, ~1,900 treated pages) found no AI-citation uplift from adding schema markup on any platform. Bing/Copilot officially consumes schema; Google officially requires none for AI features.
+- **Slop measurement (peer-reviewed, 2025):** rules-based structural checklists outperform LLM-judge "is this slop?" assessments (arXiv:2509.19163); lexical tells false-positive against post-ChatGPT human writing (Max Planck, arXiv:2409.01754). The fingerprint registry in Step 4 is structural for this reason.
+
+### Constant provenance — how to use the numbers in this spec
+
+Two kinds of rules live in this spec, and they age differently:
+
+- **Language mechanics** (coreference resolution, condition preservation, SVO structure, density-over-length, anti-oversimplification) are grounded in how retrieval over language works. They are durable — apply them at full confidence.
+- **Empirical constants** (the grounding-coverage percentages, page-length bands, fan-out counts, AI-fingerprint marker list) are dated snapshots of specific systems at specific moments. Each carries its snapshot date inline. Apply them as calibrated heuristics, and label any output derived from them as *indicative* — never as a measured property of the page. When a constant's stated date is more than two quarters old, say so in the report line that uses it (e.g. "indicative — constant dated 2025-Q4"). The constants registry and refresh procedure live in `MAINTENANCE.md` (operator-facing; do not read it during an audit).
+
+This distinction is what keeps the audit honest when the engines move: the logic stays, the numbers get re-validated.
+
+---
+
+## Step 0 — Authority & Machine-Access Preconditions (Stage One)
+
+The two-stage model (Kopp) this spec already cites: **source authority gets a page into the retrieval pool; chunk quality decides whether it gets cited.** Steps 1–10 of this audit are a stage-two instrument. Running them on a page that fails stage one produces a confidently "healthy" rating for a page that never enters the pool — the most misleading output an audit can emit. Step 0 makes the stage-one preconditions visible instead of silently out of scope.
+
+### 0a — On-page authority signals (assess only what the input actually contains)
+
+**If raw HTML is supplied**, check and record:
+
+- **Structured data:** presence of schema.org JSON-LD blocks and which types (`Organization` / `LocalBusiness` / `MedicalBusiness` / `Attorney` / `Service` / `Article` with `author` / `FAQPage`). Absence on a commercial local-business page → finding `MISSING_SCHEMA_MARKUP` (**MINOR**, G1). Severity is deliberately low: the only controlled study to date (diff-in-diff, ~1,900 treated pages, dated 2026-05) found adding schema produced no AI-citation uplift on any platform, and Google states no special markup is needed for AI features. Schema remains worthwhile hygiene for entity disambiguation and for Bing/Copilot (which officially does consume it, and ChatGPT rides Bing's index) — recommend it as hygiene, never as a primary GEO lever.
+- **Author attribution:** a named author/practitioner byline in the markup. Absence on healthcare/legal/financial content → finding `MISSING_AUTHOR_ATTRIBUTION` (IMPORTANT, G1) — 2026 quality-update direction explicitly favors named human experts on YMYL content.
+- **Date signals:** a visible published/modified date. Nuance when recommending updates: freshness influence is query-class-dependent (strong for news/pricing/comparison queries, weak for evergreen/definitional), and timestamp-only changes are ignored by engines — only substantive content deltas register. Never recommend "update the date".
+
+**If the input is markdown or plain text** (the common Mode A case), record all of 0a as `null` / not assessable. Do not guess, and do not penalise — the markup may exist on the live page and simply not be in your input.
+
+### 0b — Off-page & infrastructure checklist (emit, don't fake)
+
+These can never be verified from supplied copy. Do NOT pretend to assess them; emit them in the JSON as `authority_access.offpage_checklist` with status `NOT_VERIFIABLE_FROM_COPY` so the operator checks them externally:
+
+| Item | Why it gates everything downstream |
+|---|---|
+| **AI crawler access at the CDN/WAF layer** — verify the search-index bots (OAI-SearchBot, PerplexityBot, Claude-SearchBot, Googlebot) and user-fetch agents get HTTP 200, not 403 (agent list dated 2026-06) | The #1 silent GEO failure (2026): CDNs (Cloudflare since 2025-07, Vercel, Akamai) default-block AI bots for new domains; ~a quarter of sites block at the CDN layer without knowing (directional, 2026). Note: robots.txt is NOT a complete control — ChatGPT-User and Perplexity-User bypass it by design (dated 2025-12); and Google-Extended does NOT remove a page from AI Overviews/AI Mode (those ride Googlebot) |
+| **Server-side rendering of body content** | Highest-confidence access check there is: only Googlebot and Applebot execute JavaScript; every other AI crawler (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, PerplexityBot) fetches but never renders (measured at scale 2024-12, reconfirmed 2026). Body copy that exists only client-side is invisible to every AI engine except Google |
+| **Server-log evidence of AI fetches** | Log lines from OAI-SearchBot / ChatGPT-User / PerplexityBot / ClaudeBot are the ground truth that retrieval is actually happening; their absence after a rewrite is a louder signal than anything in this report. Bing Webmaster Tools' AI Performance report (2026-02) gives first-party citation data for the ChatGPT/Copilot surface |
+| **Off-page entity corroboration via brand-mention breadth** | The strongest measured correlate of AI-answer brand presence is breadth of branded web mentions (ρ≈0.66 across 75K brands, 2025) — directories, Google Business Profile, association registries, local citations — NOT backlink authority (ρ≈0.22) and NOT marquee news placements (r≈0.07). Organic-rank overlap with AI citations is falling and surface-dependent (per-citation ~32–38% from top-10, dated 2026-Q1) — classical rank helps but is no longer the whole ticket |
+| **Author entity findable online** | The named practitioner/author should be independently discoverable with matching credentials; 2026 core updates favor named human experts on YMYL content |
+
+**Do not recommend `llms.txt`.** No major AI platform reads it (0.1% of AI-bot visits touch it, 90-day log study 2026); recommending it wastes operator effort and signals cargo-culting. If the operator asks, say it's currently a no-op for AI-search visibility.
+
+**Rules for Step 0:**
+
+1. Checklist items in 0b are **not findings** — never put them in `findings[]` or the gate counts (they would swamp G1 with unverifiable items). They live only in `authority_access`.
+2. The only Step 0 findings permitted are the two HTML-observable ones in 0a (`MISSING_SCHEMA_MARKUP`, `MISSING_AUTHOR_ATTRIBUTION`), and only when raw HTML was supplied.
+3. The report header carries a one-line stage-one caveat so no reader mistakes chunk quality for citation probability.
+
+### Step 0 output
+> 🛰️ **Authority & Access (Stage One)**
+> On-page: schema [types found / none found / not assessable — input is markdown] · author byline [✅ / ⚠️ missing / n/a] · date signals [✅ / ⚠️ / n/a]
+> Off-page (operator must verify — NOT findings): AI-crawler access · server-side rendering · log evidence of AI fetches · entity corroboration · author entity
+> ⚠️ **Stage-one caveat:** this audit scores chunk quality. A page that fails authority/access preconditions will not be cited regardless of how clean the findings below are.
+
 ---
 
 ## Step 1 — Industry Mode Detection
@@ -149,7 +213,7 @@ Beyond the opening, **position does not affect retrieval**. Modern RAG systems c
 **How to compute Zone 1 mechanically (do not estimate visually):**
 
 1. Count the total characters of the visible body content (exclude HTML, navigation, footer, sidebar, and any detected CTA blocks).
-2. Zone 1 boundary = `min(0.20 × total_chars, 2000)`, rounded UP to the end of the current sentence (do not split a sentence).
+2. Zone 1 boundary = `min(0.20 × total_chars, 2000)`, rounded UP to the end of the current sentence (do not split a sentence). Headings, labels, table cells, and list fragments do not count as sentences for this rounding rule — if the boundary lands inside such non-sentence text, close Zone 1 at the nearest **preceding** sentence end instead of rounding forward (rounding forward through a structural block could absorb an entire table into Zone 1).
 3. If the body is < 2,000 characters total, Zone 1 IS the entire body — flag the page as `UNDER_BUILT` for any commercial intent (see Page Length Bands below).
 4. Record the computed Zone 1 character count in the report header (e.g. "Zone 1: first 840 characters / 2 sentences").
 
@@ -171,17 +235,25 @@ Beyond the opening, **position does not affect retrieval**. Modern RAG systems c
 
 Every content section (under an H2 or H3) will be retrieved as an independent chunk. It must work in isolation. The section integrity test has three rules:
 
-**1. Topical binding** — Every section must fall within the scope of the **primary search intent** the page serves (identified in Step 3). The search intent — not the H1 — is the anchor. If the H1 doesn't reflect the search intent, that's a separate finding (flag the H1 as misaligned under heading hygiene).
+**1. Topical binding** — Every section must fall within the scope of the page's **fan-out set**: the primary search intent PLUS the synthetic sub-queries enumerated in Step 3. The fan-out set — not the H1, and not the primary intent string alone — is the anchor. If the H1 doesn't reflect the search intent, that's a separate finding (flag the H1 as misaligned under heading hygiene).
 
-**The intent scope test:** Does this section answer a sub-question that someone with the primary search intent would naturally ask? If someone searching "dental implants Westminster WA" would plausibly want to know this, the section is within scope. If they wouldn't, it's drifting.
+Why the fan-out set and not just the primary intent: AI answer engines expand a user query into synthetic sub-queries — Google officially describes "dozens" issued simultaneously — and retrieve against that *distribution*. Roughly a third of pages cited by ChatGPT surfaced only for a fan-out sub-query, never for the head query (548K-page study, dated 2026-Q2), and ~95% of fan-out queries have zero traditional search volume, so the operator's keyword tools can't see them. A page's sections are retrieved against machine-generated sub-queries, not the operator's one string. The 2026-consensus page shape is the **container model**: the main topic is the container, and sub-queries are answered as clearly-labeled, self-contained sections within the same page. Judging sections against a single intent string — the pre-fan-out model — amputates exactly the sections that win sub-queries.
+
+**The fan-out scope test:** Does this section answer the primary intent or one of the enumerated fan-out sub-queries? If yes, it is in scope — regardless of whether it "dilutes focus" by the old single-topic intuition.
 
 Three levels of drift:
 
-- **On-topic:** The section directly answers a sub-question of the primary intent. "What do dental implants cost?" for a page serving "dental implants Westminster" — cost is something an implant searcher naturally asks.
-- **Adjacent but oversized (scope creep):** The section covers a related query that deserves its own page. "Dental Implants vs Bridges vs Dentures — A Complete Comparison" running 3+ paragraphs on an implants page is a mini-page within a page. It will never compete against a dedicated comparison page, and it dilutes the implants page's focus. **Flag as scope creep** — recommend splitting into its own page and linking to it, or reducing to a brief comparison table that stays focused on implants as the primary option.
-- **Off-topic:** The section's topic is not a sub-question of the primary intent at all. "All About Westminster, WA" on a dental implants page — no one searching for dental implants is looking for suburb facts. **Flag as off-topic** — recommend removing or replacing entirely.
+- **In scope:** The section answers the primary intent or any enumerated fan-out sub-query. "What do dental implants cost?" on a page serving "dental implants Westminster" — cost is a near-universal fan-out dimension. Keep it as a labeled section; assess it on content quality.
+- **Oversized in-scope section (rebalance, don't amputate):** The section answers a fan-out sub-query but has grown to dominate the page — it exceeds 250 words AND more than ~40% of the page's total body words. A 1,200-word comparison inside a 2,800-word implants page is crowding out the other sub-queries. **Flag as `SCOPE_CREEP` with a rebalance instruction:** compress to a focused answer (a comparison table plus a short paragraph usually suffices), or split it out *while retaining a 100–150-word summary section on-page* so the page still covers that sub-query. Never recommend removing the sub-query coverage entirely.
+- **Off-topic:** The section answers a query that is in neither the primary intent nor the fan-out set. "All About Westminster, WA" on a dental implants page — suburb tourism facts are not a sub-query any implant fan-out generates. **Flag as off-topic** — recommend removing or replacing entirely.
 
-**The split test (mechanical):** Count the words in the section. If the section exceeds **250 words** AND fully answers a distinct query someone would search for independently, flag it as **scope creep** — recommend splitting into its own page or reducing to a brief comparison summary that stays focused on the primary intent. Sections under 250 words that mention the adjacent topic but stay focused on the primary intent are fine; a brief comparison table or a single referencing paragraph is allowed. Do not use "paragraphs" as the unit — paragraph length varies wildly. Use word count.
+**The split test (mechanical, fan-out-aware):** Count the words in the section, then check the section's query against the Step 3 fan-out set:
+
+1. Section answers a query **inside** the fan-out set → never scope creep on topical grounds. If it exceeds 250 words AND ~40% of total body words, flag `SCOPE_CREEP` with the rebalance instruction above (compress or split-with-summary-retained).
+2. Section answers a query **outside** the fan-out set and exceeds 250 words → classic scope creep; recommend splitting into its own page and linking to it.
+3. Section under 250 words → fine in all cases; a brief table or single referencing paragraph is allowed.
+
+Do not use "paragraphs" as the unit — paragraph length varies wildly. Use word count. And never emit a cut/split recommendation without first stating which fan-out sub-query (if any) the section serves — that statement is what makes the verdict auditable.
 
 **2. Single concept** — One section answers one question or covers one concept. If a section covers both "how long do implants last" and "what do implants cost", those are two different queries competing in the same chunk. An LLM retrieving this chunk for a cost query gets diluted by longevity content, and vice versa. Split them.
 
@@ -195,16 +267,18 @@ Three levels of drift:
 
 ### Page length and coverage
 
-Petrovic's research on Google's Gemini grounding system (7,060 queries, 883,262 snippets) shows that the typical page gets ~380 words selected for grounding regardless of total page length. Coverage drops sharply as page length increases:
+Petrovic's research on Google's Gemini grounding system (7,060 queries, 883,262 snippets — **snapshot dated 2025-Q4, one system at one moment**) found that the typical page gets ~380 words selected for grounding regardless of total page length, with coverage dropping sharply as page length increases:
 
-| Page length | Approximate content used for grounding |
+| Page length | Approximate content used for grounding (indicative, 2025-Q4) |
 |---|---|
 | Under 5,000 characters | ~66% |
 | 5,000–10,000 characters | ~42% |
 | 10,000–20,000 characters | ~25% |
 | Over 20,000 characters | ~12% |
 
-This data is specific to Google's Gemini system but serves as a useful proxy: adding more content dilutes coverage without increasing what gets selected. Every section on the page should justify its length by carrying new atomic facts. On long pages, section integrity becomes critical — each section must earn its place by covering a distinct subtopic with dense, self-contained content. Sections that dilute the page with filler or off-topic content waste grounding budget.
+Follow-up analysis (dated 2026-Q1) refined the picture: the grounding budget is roughly fixed per *query* (~1,900–2,000 words across all sources), per-page extraction plateaus around ~540 words no matter how long the page is, and the extraction unit is the **individual sentence** (~15 words average) assembled by extractive selection — which is precisely why this audit's sentence-level self-containment and anchorable-statement checks matter. Independent corroboration from a different engine: across 1.2M ChatGPT answers (dated 2026), 44.2% of citations came from the first 30% of the page — the "ski ramp" decay that supports the Zone 1 model. Note also that the grounding payload format changed wholesale in early 2026; these constants are a moving target by construction.
+
+The durable principle is **density beats length**: grounding budgets are finite, so adding low-density content dilutes coverage without increasing what gets selected. That principle survives model and chunker changes; the specific percentages do not. When reporting the coverage estimate, always label it *indicative* and carry the snapshot date (e.g. "estimated ~42% grounding coverage — indicative, constant dated 2025-Q4"). Never present it as a measured property of the page. Every section on the page should justify its length by carrying new atomic facts. On long pages, section integrity becomes critical — each section must earn its place by covering a distinct subtopic (ideally a fan-out sub-query) with dense, self-contained content.
 
 **Page length check (mechanical thresholds):** Assess whether the page length is appropriate for the intent complexity using these character-count bands. Use the operator-supplied `page_type` (or infer it from URL slug, H1, and content) and apply the matching row.
 
@@ -215,11 +289,11 @@ This data is specific to Google's Gemini system but serves as a useful proxy: ad
 | Comparison / commercial investigation | < 5,000 chars | 5,000–15,000 | > 22,000 chars |
 | Emergency service (locksmith, plumber, towing) | < 1,500 chars | 1,500–5,000 | > 8,000 chars |
 
-Record the band as `page_length_band` (`UNDER_BUILT`, `HEALTHY`, or `OVER_BUILT`) in the JSON appendix. Note the approximate character count AND the estimated grounding-coverage percentage from the table earlier in this section. An under-built page typically fails Gate 1 (not enough surface area for retrieval); an over-built page typically fails Gate 2 (grounding budget diluted).
+Record the band as `page_length_band` (`UNDER_BUILT`, `HEALTHY`, or `OVER_BUILT`) in the JSON appendix. Note the approximate character count AND the estimated grounding-coverage percentage from the table earlier in this section (labeled indicative, with its snapshot date). An under-built page typically fails Gate 1 (not enough surface area for retrieval); an over-built page typically fails Gate 2 (grounding budget diluted). The bands are deliberately broad heuristics derived from the dated coverage data — when a page sits near a band boundary, say so rather than asserting the verdict as exact.
 
 ### Zone analysis output
 > 🗺️ **Zone Analysis**
-> **Page length:** [~X characters / ~X words — estimated ~X% grounding coverage]
+> **Page length:** [~X characters / ~X words — estimated ~X% grounding coverage (indicative, constant dated 2025-Q4)]
 > **Zone 1 (first ~20%):** [present ✅ / missing ⚠️ — be specific about what's present/missing from the required minimum]
 > **Body ([N] content sections):** [summary — note section integrity issues if any]
 > ⚠️ **Architecture gap:** [if key facts or trust signals exist only in Body sections and not in Zone 1, flag them here with a specific recommendation to mirror in Zone 1]
@@ -273,6 +347,51 @@ Do not silently override the operator's intent. State the mismatch, propose an a
 
 Long pages often serve multiple search intents. Identify the primary intent, then identify any secondary intents the page also serves. Each intent should map to at least one anchorable statement somewhere on the page. If a secondary intent is served by content but has no self-contained citable statement, flag it — the page has the information but an LLM can't efficiently cite it for that query.
 
+### Query fan-out enumeration (mechanical)
+
+AI answer engines do not retrieve against the user's literal query. They expand it into synthetic sub-queries — "dozens" per Google's official description; observed averages run ~10–20 per prompt with ~3x query expansion (practitioner data, dated 2026-Q2) — and retrieve sections against that *distribution*. The audit must therefore enumerate the likely fan-out set explicitly. This set, not the primary intent string alone, is the anchor for topical binding (Step 2) and the coverage check below.
+
+One honest caveat to carry into the report: fan-out is partially personalized (same query, different sub-queries per user), so any enumerated set is a reasoned central estimate with an inherent ceiling on precision. That does not weaken the method — covering the high-probability dimensions still captures the bulk of the distribution — but never present the enumerated set as engine telemetry.
+
+**How to enumerate (8–14 sub-queries):** Take the primary intent and generate one sub-query per applicable dimension, phrased as a real user query (not a topic label):
+
+| Dimension | Example for "dental implants Westminster WA" |
+|---|---|
+| Definition / what-is | "what is a dental implant and how does it work" |
+| Cost / pricing | "how much do dental implants cost in Perth" |
+| Comparison vs alternatives | "dental implants vs bridges vs dentures" |
+| Process / steps | "what happens during dental implant surgery" |
+| Duration / timeline | "how long does the dental implant process take" |
+| Eligibility / suitability | "who is suitable for dental implants jawbone density" |
+| Risk / safety / pain | "do dental implants hurt what are the risks" |
+| Provider selection | "how to choose an implant dentist near Westminster" |
+| Location / availability | "dental implants Westminster WA" |
+| Aftercare / longevity | "how long do dental implants last how to care for them" |
+
+**Rules:**
+
+1. Skip dimensions that don't apply to the page type. Emergency pages collapse to four: availability, response time, cost, service area. Educational pages: definition, mechanism, implications, what-to-do.
+2. **Merge operator-observed PAA questions when supplied.** "People Also Ask" boxes are the closest *observable* proxy for fan-out — Google's own query-expansion graph surfaced in the wild — where the enumerated set is only a reasoned estimate. If the operator supplies PAA questions (or related searches), merge them into the set and tag every sub-query with its provenance: `ENUMERATED` (from the dimension table), `PAA_OBSERVED` (seen in the SERP), or `OPERATOR` (supplied directly). A PAA question the enumeration missed is a strong addition; an enumerated sub-query that PAA confirms gets priority when choosing which gaps become findings. Caveats to carry: PAA reflects traditional Google demand (fan-out also generates comparative/constraint sub-queries PAA never shows, and other engines fan out differently), so PAA *grounds* the set — it never replaces it.
+3. Record the full set in the JSON `fanout_coverage.subqueries[]`, each with its `source`, a coverage verdict — `COVERED` (a section gives an extractable answer), `PARTIAL` (mentioned but no self-contained answer), or `UNCOVERED` (absent) — the covering section's name, and a `recommended_home` (see placement strategy below).
+4. **Uncovered sub-queries are the inverse of scope creep** — they are the content the page is silently losing to competitors in fan-out retrieval. Emit a finding (`UNCOVERED_SUBQUERY`, IMPORTANT, G1) for each of the **up to 3 highest-value gaps** (judge value by commercial proximity to the primary intent; PAA-confirmed gaps outrank enumeration-only gaps); list any further gaps in `fanout_coverage` only, so the findings list stays actionable. Feed all gaps into `rewrite_brief`. Every `UNCOVERED_SUBQUERY` finding's `rewrite` field must name the placement and format — "add an FAQ entry: *How much does X cost?* — 60-word answer with price range and condition" or "add a body section with a 3-option pricing table" — never a placement-less "add coverage".
+5. The fan-out set is a reasoned estimate, not engine telemetry — say so in the report. Its job is to make coverage and scope verdicts auditable: every keep/cut/add recommendation names the sub-query it serves.
+
+### Placement strategy — routing sub-queries to homes
+
+Engines retrieve chunks, not pages, so "where should this answer live" is a routing decision: **every sub-query worth covering gets exactly one canonical chunk whose heading and opening sentence match it.** A body section and an FAQ entry are just two chunk sizes. Assign each non-covered sub-query a `recommended_home`:
+
+| `recommended_home` | When | Why |
+|---|---|---|
+| `BODY_SECTION` | The proper answer needs more than ~2 paragraphs, needs a table, or carries direct commercial weight (cost, options comparison, process, eligibility/safety in regulated modes) | Decision-critical sub-queries are what the page is *about* under the container model; a one-line FAQ answer for cost loses to the competitor's pricing section with a table |
+| `FAQ_ENTRY` | Answerable in one tight, self-contained paragraph (40–80 words): logistics, compatibility, reassurance, edge conditions, variant phrasings | The question heading IS the G1 query match, and a short self-contained answer is maximum G3 extractability; the spec already assesses each FAQ Q&A pair as its own micro-section |
+| `ZONE1_MIRROR` | The sub-query is already answered in Body but it is the primary intent or a top decision driver | First-passage bias (~44% of ChatGPT citations from the first 30% of the page, dated 2026) — mirror the atomic facts, don't move the section |
+| `EXTEND_EXISTING_SECTION` | An existing section PARTIALLY covers it and one or two added sentences complete the answer | Cheaper than a new chunk; avoids signal splitting |
+
+Two routing rules:
+
+- **One sub-query, one canonical home.** An FAQ entry that re-answers an existing body section splits the signal — two mediocre chunks compete for the same sub-query instead of one strong chunk winning it. Flag this as a DRY violation (`DRY_VIOLATION`, signal-splitting pattern — see Step 6). Zone 1 mirroring is the sanctioned exception: it is a summary surface, not a competing answer.
+- **Don't fear the bottom — fear the missing chunk.** Bottom-of-page FAQ placement is fine for long-tail sub-queries, because retrieval is chunk-to-query matching, not page position; position bias affects citation share for the head query. The constraint is only: a decision-critical sub-query must never live *exclusively* in a bottom FAQ one-liner.
+
 **H1 alignment check (mechanical substitution test):**
 
 Apply this test to the H1:
@@ -290,18 +409,20 @@ Apply this test to the H1:
 
 A misaligned H1 is a Gate 1 (retrieval) problem — it signals the wrong topic to systems that weight heading content. Always quote the H1 verbatim in the report and state which row of the table it matches.
 
-### Intent coverage table
+### Intent & fan-out coverage table
 
-For each identified intent, check whether the page contains an extractable answer — a self-contained passage (1–3 sentences) that an LLM could use to directly answer that query. Record the answer's position to identify burial risk.
+For each identified intent AND each enumerated fan-out sub-query, check whether the page contains an extractable answer — a self-contained passage (1–3 sentences) that an LLM could use to directly answer that query. Record the answer's position to identify burial risk.
 
-> 🎯 **Intent Coverage**
+> 🎯 **Intent & Fan-Out Coverage**
 >
-> | # | Query Intent | Extractable Answer? | Section | Notes |
-> |---|---|---|---|---|
-> | 1 | [primary intent] | ✅ Yes / ⚠️ No | [section name] | [e.g. "answer exists but not mirrored in Zone 1"] |
-> | 2 | [secondary intent] | ✅ Yes / ⚠️ No | [section name] | |
+> | # | Query | Type | Source | Extractable Answer? | Section | Recommended home | Notes |
+> |---|---|---|---|---|---|---|---|
+> | 1 | [primary intent] | primary | OPERATOR | ✅ Yes / ⚠️ No | [section name] | [ZONE1_MIRROR if buried] | [e.g. "answer exists but not mirrored in Zone 1"] |
+> | 2 | [secondary intent] | secondary | ENUMERATED | ✅ Yes / ⚠️ No | [section name] | | |
+> | 3 | [fan-out sub-query] | fanout | ENUMERATED / PAA_OBSERVED | ✅ COVERED / ◐ PARTIAL / ⚠️ UNCOVERED | [section name] | BODY_SECTION / FAQ_ENTRY / EXTEND_EXISTING_SECTION | |
+> | … | [one row per sub-query] | | | | | | |
 >
-> ⚠️ **Coverage gap:** [any intent without an extractable answer, or any primary intent answer missing from Zone 1]
+> ⚠️ **Coverage gap:** [any intent without an extractable answer, any primary intent answer missing from Zone 1, and the highest-value UNCOVERED sub-queries]
 
 ### Flow check
 
@@ -374,15 +495,19 @@ The four-signal differentiation check above tests whether the page *names* what 
 
 A page can pass all four differentiation signals at the sentence level and still be commodity content. The sentence-level substitution test catches single sentences; this check catches the *whole-page* pattern: every claim plausible, every fact generic, every entity vague enough to belong to anyone.
 
+The target of this check is **low-originality density, not AI authorship**. The 2026 evidence is consistent: engines are provenance-blind but originality-sensitive — AI-assisted, expert-edited content cites fine, while primarily-AI low-originality content is roughly 3.5x underrepresented among cited pages (dated 2026-Q1) and decays over months. So never frame a commoditization finding as "this was written by AI"; frame it as "this page contains nothing a competitor's page doesn't also contain."
+
 **Apply these five tests to the page as a whole:**
 
 | # | Test | How to count | Threshold |
 |---|---|---|---|
-| 1 | **Whole-page substitution** | Replace the brand/clinic/practitioner name throughout the entire page. Does the page still read as a complete coherent article that a competitor could host without modification? | If yes → 1 fail point |
-| 2 | **Unique-data density** | Count sentences containing data specific to this provider (this clinic's success rate, this practitioner's case count, this firm's settlement range, named technology in-house, named insurance providers, named protocol). Exclude generic industry stats ("10 million Americans suffer..."). | < 3 such sentences → 1 fail point |
+| 1 | **Section-weighted substitution** | Run the name-swap **per body content section** (CTA blocks excluded): replace the brand/clinic/practitioner names within the section — could a competitor host *this section* unmodified? Sum the body words of swappable sections. Proprietary nouns elsewhere on the page (a trademarked app name, a named cookbook, a staff list) do NOT immunize the rest of it — the test measures *distributed* uniqueness, not token uniqueness. | ≥ 40% of body words live in swappable sections → 1 fail point |
+| 2 | **Unique-data density** | Count sentences containing data specific to this provider (this clinic's success rate, this practitioner's case count, this firm's settlement range, named technology in-house, named insurance providers, named protocol). Exclude generic industry stats ("10 million Americans suffer..."). Normalize by length: rate = count ÷ (body words ÷ 1,000) — an absolute count rewards dilution (6 unique sentences in 900 words is dense; the same 6 in 2,100 words is sparse). | rate < 3 per 1,000 body words (on pages under 1,000 words: fewer than 2 sentences absolute) → 1 fail point |
 | 3 | **Unique-angle presence** | Does the page contain a named methodology, contrarian take, specific protocol, refusal stance, or viewpoint that 5+ competitor pages would not also state? Examples: "Dr. Yap's three-stage immediate-load protocol", "we do not perform X procedure because Y", "we only treat patients with Z condition profile". | Absent → 1 fail point |
 | 4 | **External-verifiable trust signal density** | Count named, externally verifiable trust signals (registration number, named credential, named external citation, specific year-founded, named technology with model number, named insurance providers, named partnerships). Generic claims ("our experienced team", "decades of experience") do not count. | < 3 such signals → 1 fail point |
-| 5 | **AI fingerprint markers** | Count AI-fingerprint signals: em-dashes used as primary punctuation, AI-signature transitions ("Moreover,", "Furthermore,", "That said,", "It's worth noting"), parallel-structure pile-ups ("Not just X, but Y" appearing 3+ times), gerund+abstract-noun headings ("Restoring Confidence"), uniform sentence length blocks (3+ consecutive 13–15 word sentences). | ≥ 5 distinct markers → 1 fail point |
+| 5 | **AI fingerprint markers** (structural registry, dated 2026-06) | Count distinct *structural* fingerprints: (a) contrastive-negation pile-ups ("it's not X, it's Y" / "not just X, but Y" used 3+ times — the consensus #1 tell of 2026); (b) inflated-significance language ("stands as a testament", "plays a vital role"); (c) superficial trailing "-ing" analysis clauses ("..., highlighting the importance of..."); (d) vague attribution with no named source ("industry reports suggest", "experts agree"); (e) rule-of-three pile-ups and formulaic section skeletons (every section: claim → three bullets → moralizing wrap-up); (f) uniform sentence-length blocks and identical paragraph skeletons across sections; (g) gerund+abstract-noun headings ("Restoring Confidence"); (h) **rubric-shaped GEO sameness** — every section mechanically opening with an entity+number+condition formula sentence under a query-matching H2: by-the-book GEO uniformity is itself convergent, substitutable vanilla. Count patterns mechanically against this registry — do NOT substitute a holistic "does this feel AI-written" judgment; rules-based structural checklists measurably outperform LLM-judge slop assessments (peer-reviewed, 2025). Em-dash density and 2024-era vocabulary tells ("delve", "Moreover,") are now weak signals at best — current models suppress them and human writers have adopted them; never base the verdict on them alone. | ≥ 5 distinct markers → 1 fail point |
+
+**Tie-break toward the fail point.** When a test is genuinely borderline — swappable share hovering near 40%, density right at the threshold, an angle that is arguably generic — award the fail point. The asymmetry is deliberate: this audit's consumer is a rewriter, so a false "fine" silently suppresses a fix that was needed, while a false flag costs one human review. Calibration history backs this: solo auditors reading these tests leniently is the observed drift direction (2026-06), not the hypothetical one.
 
 **Score the page:**
 
@@ -397,8 +522,8 @@ A page can pass all four differentiation signals at the sentence level and still
 
 **Commoditization output:**
 > 🌐 **Page-level Commoditization Check**
-> 1. Whole-page substitution: ✅ passes / ⚠️ fails — [evidence]
-> 2. Unique-data density: [N specific sentences found] — ✅/⚠️
+> 1. Section-weighted substitution: ✅ passes / ⚠️ fails — [~X% of body words in swappable sections; name the swappable sections]
+> 2. Unique-data density: [N specific sentences ÷ body kilowords = R/1,000] — ✅/⚠️
 > 3. Unique-angle presence: ✅ present ("[quote angle]") / ⚠️ absent
 > 4. External-verifiable trust signals: [N found] — ✅/⚠️
 > 5. AI fingerprint markers: [N found, list them] — ✅/⚠️
@@ -544,6 +669,7 @@ The test: does this repetition make a section independently citable, or does it 
 | Synonym cycling | "Our team of experts... our skilled professionals... our experienced practitioners..." | Three phrases, one claim |
 | Transitional filler | "Now that you understand X, let's explore Y..." | Zero information density |
 | Conclusion restating intro | Final section repeats opening claims verbatim or near-verbatim | Confirms AI generation pattern |
+| Signal splitting | A body section answers "how much do implants cost" AND an FAQ entry re-answers it with the same payload | Two mediocre chunks compete for one sub-query instead of one strong chunk winning it; consolidate into the canonical home (Step 3 placement strategy) and leave at most a one-line pointer in the other |
 
 ### DRY check output
 > 🔁 **DRY Check**
@@ -684,6 +810,20 @@ A section is a CTA block if it matches **two or more** of:
 
 Assess each content section against six checks. Exclude CTA blocks identified in Step 9. Label each section as Zone 1 or Body. Apply mode-specific rules where indicated.
 
+### Disposition before polish (triage order — load-bearing)
+
+Before running the six checks on ANY section, fix each section's **disposition** using what earlier steps already established (fan-out scope verdicts, analyzer drift sections, DRY/duplicate detection, page-level commoditization):
+
+| Disposition | Meaning for the rest of this audit |
+|---|---|
+| `KEEP_IN_PLACE` | Survives where it is → full six-check assessment + sentence flagging |
+| `MOVE` | Content survives, position is wrong → full assessment; the position fix lives in `recommended_flow`, never as a per-sentence finding |
+| `MERGE_INTO` | Content survives inside another section → assess only the surviving content; the finding names the facts to carry over (a salvage list), with no polish for prose that dies in the merge |
+| `REPURPOSE` | Right neighborhood, wrong content (it serves the author's intent, not the reader's sub-query) → ONE finding stating the section's new job + the salvage list; no sentence-level polish of copy that won't survive the repurpose |
+| `CUT` | Does not belong → exactly ONE structural finding justifying the cut (`OFF_TOPIC_SECTION` / `SCOPE_CREEP` / `DRY_VIOLATION`), plus `TRAPPED_TRUST_SIGNAL` salvage findings if unique signals live there. Nothing else: no flagged sentences, no filler/pronoun/density/heading findings inside a section that is being deleted |
+
+Why this order is load-bearing: a sentence-level rewrite inside a section being cut wastes the rewriter's budget, and worse, it counter-signals — every finding is an implicit keep vote, so polishing a doomed section tells the rewriter the section has salvageable value. Polish is for survivors only. Sections disposed `CUT`/`MERGE_INTO`/`REPURPOSE` still appear in the per-section assessment (with their disposition stated), so the rewriter sees the decision, not an omission.
+
 For each section, produce:
 - **Strengths:** What's working well — be specific. These tell the LLM writer what to preserve.
 - **Issues:** What needs fixing — name the exact problem, which gate it affects, and what the fix looks like. These are the writer's instructions.
@@ -750,6 +890,8 @@ The principle is straightforward: AI systems select a limited amount of content 
     (a) a **named entity** that is NOT already stated in the heading (clinic, practitioner, product, location, technology),
     (b) a **specific data point** (number, percentage, range, timeframe, or quantified outcome),
     (c) a **stated condition or constraint** (eligibility, scope, limitation, prerequisite).
+
+  **Definitional-anchor exemption:** if the opening sentence is itself a self-contained definition that directly answers a definition-dimension fan-out sub-query (subject named, SVO structure, no pronouns — e.g. "Foundation piers are structural supports driven into the ground beneath a home to stabilize a settling foundation"), it passes the opener test regardless of the 3-element count. The test exists to catch recursive padding ahead of the section's first real fact; when the opener IS the section's extractable answer, flagging it inverts the test's purpose.
 
   | Elements present | Verdict |
   |---|---|
@@ -855,9 +997,9 @@ After assessing all sections, produce:
 
 Findings are categorised by severity to help the operator and writer prioritise:
 
-- **Critical:** Zone 1 missing required elements, off-topic sections, scope creep (sections that should be their own page), section integrity failures, condition preservation violations in regulated content, **any numeric outcome claim in healthcare/legal/financial mode without an inline qualifying condition** (see auto-escalation below), CTA blocks containing trapped trust signals not duplicated elsewhere, missing semantic H2/H3 hierarchy, page-length UNDER_BUILT verdicts. These are structural problems — the page can't compete until they're fixed.
-- **Important:** Entity completeness gaps, format mismatches, missing anchorable statements, unresolved coreference, page-length OVER_BUILT verdicts, anonymous unverifiable testimonials, factually unverifiable anchorable statements (`verify_before_publish`). These reduce the page's chances of being cited.
-- **Minor:** Natural language quality issues, minor density improvements, heading tweaks. These are polish — fix them after the critical and important issues.
+- **Critical:** Zone 1 missing required elements, off-topic sections (outside the fan-out set), classic scope creep (a section answering a query *outside* the fan-out set at >250 words — should be its own page), section integrity failures, condition preservation violations in regulated content, **any numeric outcome claim in healthcare/legal/financial mode without an inline qualifying condition** (see auto-escalation below), CTA blocks containing trapped trust signals not duplicated elsewhere, missing semantic H2/H3 hierarchy, page-length UNDER_BUILT verdicts. These are structural problems — the page can't compete until they're fixed.
+- **Important:** Entity completeness gaps, format mismatches, missing anchorable statements, unresolved coreference, uncovered fan-out sub-queries (`UNCOVERED_SUBQUERY`, top 3 only), oversized in-scope sections needing rebalance (in-set `SCOPE_CREEP`), page-length OVER_BUILT verdicts, anonymous unverifiable testimonials, factually unverifiable anchorable statements (`verify_before_publish`), missing author attribution on YMYL content (HTML-observable only). These reduce the page's chances of being cited.
+- **Minor:** Natural language quality issues, minor density improvements, heading tweaks, missing schema markup (`MISSING_SCHEMA_MARKUP` — hygiene, not a citation lever; see Step 0a). These are polish — fix them after the critical and important issues.
 
 **Healthcare / legal / financial auto-escalation rule.** In regulated mode, the following automatically escalate to **CRITICAL** regardless of where they appear on the page:
 - A numeric outcome claim (e.g., "patients lose 10–20 pounds in the first month", "investors saw 12% returns", "settlement averages $250,000") that does NOT have its qualifying condition (sample size, duration, eligibility population, comparator, "results may vary" clause, etc.) within the SAME sentence.
@@ -872,7 +1014,7 @@ After assessing all sections, count the findings per gate to identify the primar
 
 | Gate | Checks that feed it | What findings here mean |
 |---|---|---|
-| **G1: Retrieval** | Entity Completeness, Format Appropriateness | Content doesn't surface at all — wrong language, missing entities, format makes content unparseable |
+| **G1: Retrieval** | Entity Completeness, Format Appropriateness, Fan-Out Coverage (`UNCOVERED_SUBQUERY`), Authority/Access (HTML-observable only) | Content doesn't surface at all — wrong language, missing entities, missing sub-query coverage, format makes content unparseable |
 | **G2: Ranking** | Structural Fitness, Information Density, Entity Completeness, Natural Language Quality | Content surfaces but loses to competitors — not dense enough, not differentiated, not well-structured |
 | **G3: Citation** | Structural Fitness, Extractability, Format Appropriateness, Natural Language Quality | Content ranks but LLM can't confidently use it — unresolved pronouns, missing conditions, no anchorable statement |
 
@@ -896,19 +1038,82 @@ This directs the priority actions: fix the bottleneck gate first because downstr
 
 ---
 
+## Validation Plan — closing the loop (mandatory output)
+
+Everything above is *prediction*: heuristics applied to copy. Whether the page actually gets retrieved and cited is an empirical question, and an audit that never confronts it cannot detect when its own heuristics go stale — it just keeps emitting confident, well-formed, increasingly wrong verdicts. Every audit therefore ends by emitting a validation plan the operator can execute. This is what makes the audit falsifiable.
+
+**Build the prompt corpus (10–20 prompts):**
+
+1. Take the fan-out set from Step 3 and rephrase each sub-query as a prompt a real user would type into an AI assistant (conversational, first-person where natural: "how much should I expect to pay for a dental implant in Perth?" not "dental implant cost Perth").
+2. Cover four intent classes: **discovery** ("best implant dentist near Westminster"), **comparison** ("implants vs bridges — which is better long-term?"), **recommendation** ("should I get an implant or a bridge for one missing molar?"), **factual** ("how long does a dental implant last?").
+3. Add 2–3 **brand prompts** ("is [brand] good for dental implants?", "[brand] reviews") — these measure entity presence independent of the page.
+
+**Operator instructions (embed verbatim in the report):**
+
+- Run the corpus across ≥3 engines (Google AI Mode/AI Overviews, ChatGPT, Perplexity; add Claude and Copilot if capacity allows) **before** the rewrite ships and again **~4 weeks after**.
+- Record per prompt: Was any page from the domain cited? Was the brand *named* (not just linked — the majority of AI citations link without naming the brand; citations and mentions are separate KPIs, dated 2026-06)? Which competitor won the prompt instead?
+- Watch the first-party sources: Bing Webmaster Tools' AI Performance report (citation + grounding-query data for the Copilot/ChatGPT surface, available since 2026-02), and server logs for OAI-SearchBot / ChatGPT-User / PerplexityBot / ClaudeBot fetches.
+- Interpretation caveat: zero-citation answers are increasingly common (ChatGPT's zero-citation rate roughly doubled in 2026-Q2). If NO competitor gets cited either, the query class is being answered parametrically — brand-mention presence then matters more than page citations, and that's an off-page program, not a rewrite problem.
+
+**The contract:** record the corpus in the JSON `validation_plan` block. If post-rewrite measurement shows rubric-passing pages systematically failing to win citations, the rubric is stale — that observation outranks this spec and should trigger its revision.
+
+---
+
+## Recommended Page Flow (the rewriter's assembly sequence)
+
+The audit's findings are a parts list; this block is the assembly sequence. Emit it in every audit (markdown `📜 RECOMMENDED PAGE FLOW` block + JSON `rewrite_brief.recommended_flow`).
+
+**Why order belongs to the human reader:** chunk retrieval is order-indifferent — sections are retrieved independently against sub-queries — with one exception, first-passage bias (Zone 1 is premium). So section order is a free variable for the machines, and it should be spent entirely on the human persuasion arc: each section does ONE job walking the reader toward the conversion (booking, call, form). The two reader models compose per section: one fan-out sub-query (the machine goal) = one persuasion job (the human goal). The intent analyzer's hidden driver, when supplied, dictates the arc's emphasis (e.g. a skeptical reader needs credibility before options).
+
+**Arc templates by page type** (adapt, don't force — sections the page doesn't need are omitted):
+
+| Page type | Arc |
+|---|---|
+| service | Zone 1 answer + instant credibility → mechanism/"does it work" → options + pricing (**CTA**) → process/de-risk → proof (**CTA**) → eligibility & objections (FAQ) → location/logistics (**final CTA**) |
+| comparison | Zone 1 verdict + comparison table → per-option detail → decision criteria ("choose X if…") → proof → FAQ → **CTA** |
+| emergency | Phone number + availability + service area in Zone 1 (**CTA is the answer**) → response time/process → pricing basis → trust signals → FAQ |
+| blog/educational | Zone 1 definition/answer → mechanism → implications → what-to-do (the only **CTA**, soft) → FAQ |
+
+**Construction rules:**
+
+1. Every existing section appears exactly once with its disposition (`KEEP_IN_PLACE` / `MOVE` / `MERGE_INTO` / `REPURPOSE` / `CUT`); cut sections appear at the end of the list, marked, so the rewriter sees the decision.
+2. Every `UNCOVERED_SUBQUERY` finding routed `BODY_SECTION` appears as a `NEW` entry at its arc position — placement strategy and flow are the same decision viewed from two sides.
+3. Each entry pairs `serves_subquery` (machine goal) with `human_goal` (one persuasion job, stated as what the reader should think/feel/do after it: "self-select a program", "trust the practitioner", "objection cleared").
+4. Mark CTA placements explicitly (`cta_after: true`) — typically after options/pricing, after proof, and at the end; an emergency page leads with it. The Step 9 CTA inventory says how many exist; the flow says how many survive and where.
+5. The flow must be achievable from the findings: no entry may depend on content that no finding or `operator_fact_requests` item supplies.
+
+---
+
 ## Output Format
+
+**Rewrite urgency — derived, not judged.** The first line after the report header is a mechanically computed urgency verdict. It exists because severity gets buried: a report can carry 8 CRITICAL findings and still *read* as healthy when its top shows a green commoditization verdict, a HEALTHY length band, and a "what's working" list. The headline makes that impossible. Compute it from this table — take the **highest** row that matches; no judgment, no override:
+
+| Level | Trigger (any one) |
+|---|---|
+| `SEVERE` | CRITICAL findings ≥ 3, OR commoditization verdict is COMMODITIZED / FULLY_COMMODITIZED_AI_SLOP |
+| `SUBSTANTIAL` | CRITICAL findings ≥ 1, OR verdict is PARTIALLY_COMMODITIZED, OR uncovered fan-out sub-queries ≥ 3 |
+| `MODERATE` | Total findings ≥ 5 (none CRITICAL) |
+| `LIGHT` | Everything below the above |
+
+The one-line justification after the level must cite the trigger counts (e.g. "8 CRITICAL findings (regulated-claim compliance) + 4 uncovered sub-queries"). Record the same level and derivation in the JSON `rewrite_urgency` block.
 
 ```
 📋 LLM Readability Audit
+🚨 Rewrite urgency: SEVERE / SUBSTANTIAL / MODERATE / LIGHT — [trigger counts, e.g. "8 CRITICAL findings + 4 uncovered sub-queries"]
 🏥 Healthcare Mode / ⚖️ Legal Mode / 💼 Financial Mode / 📚 Educational Mode / ⚙️ Standard Mode
 🧭 Intent source: OPERATOR / INTENT_ANALYZER / INFERRED  (analyzer confidence: X.XX if applicable)
+
+🛰️ AUTHORITY & ACCESS (STAGE ONE)
+  On-page: schema [types / none / not assessable] · author byline [✅/⚠️/n-a] · date signals [✅/⚠️/n-a]
+  Off-page (operator must verify — NOT findings): AI-crawler access at CDN layer · server-side rendering · log evidence of AI fetches · brand-mention breadth · author entity
+  ⚠️ Stage-one caveat: this audit scores chunk quality; a page failing authority/access preconditions will not be cited regardless of the findings below.
 
 ---
 
 🌐 PAGE-LEVEL COMMODITIZATION
   Verdict: NOT_COMMODITIZED / PARTIALLY_COMMODITIZED / COMMODITIZED / FULLY_COMMODITIZED_AI_SLOP
   [If COMMODITIZED or FULLY_COMMODITIZED_AI_SLOP: emit a one-line summary of what the page lacks AND a one-line unique-angle recommendation. The rewriter cannot fix this with sentence-level tweaks.]
-  Whole-page substitution: ✅/⚠️ | Unique-data sentences: [N] | Unique-angle present: ✅/⚠️ | External-verifiable trust signals: [N] | AI fingerprint markers: [N]
+  Section-weighted substitution: ✅/⚠️ ([X]% of body words swappable — name the swappable sections) | Unique-data density: [N] sentences = [R]/1,000 words | Unique-angle present: ✅/⚠️ | External-verifiable trust signals: [N] | AI fingerprint markers: [N]
   Fail points: X / 5
 
 ---
@@ -944,11 +1149,12 @@ This directs the priority actions: fix the bottleneck gate first because downstr
 🎯 Anchor sections (from intent-analyzer, if supplied): [list]
 🎯 Drift sections (from intent-analyzer, if supplied): [list]
 
-🎯 Intent Coverage
-  | # | Query Intent | Extractable Answer? | Section | Notes |
-  |---|---|---|---|---|
-  | 1 | [intent] | ✅/⚠️ | [section name] | |
-  ⚠️ Coverage gap: [if applicable]
+🎯 Intent & Fan-Out Coverage  (fan-out set: reasoned estimate, not engine telemetry; PAA-observed entries marked)
+  | # | Query | Type | Source | Extractable Answer? | Section | Recommended home | Notes |
+  |---|---|---|---|---|---|---|---|
+  | 1 | [primary intent] | primary | OPERATOR | ✅/⚠️ | [section name] | [ZONE1_MIRROR if buried] | |
+  | 2 | [sub-query] | fanout | ENUMERATED / PAA_OBSERVED | ✅ COVERED / ◐ PARTIAL / ⚠️ UNCOVERED | [section name] | BODY_SECTION / FAQ_ENTRY / EXTEND_EXISTING_SECTION | |
+  ⚠️ Coverage gap: [uncovered intents + highest-value UNCOVERED sub-queries, each with its recommended home]
 
 🔀 Flow check:
   ✅/⚠️ Intent answered in opening
@@ -1003,6 +1209,7 @@ This directs the priority actions: fix the bottleneck gate first because downstr
 ---
 
 Section: [Name] — [Zone 1 / Body]
+Disposition: KEEP_IN_PLACE / MOVE / MERGE_INTO [target] / REPURPOSE [new job] / CUT  [CUT/MERGE/REPURPOSE sections: structural + salvage findings only — no sentence polish]
 Integrity: ✅ / ⚠️ [which rule fails: off-topic / scope creep / single concept / self-containment]
 
 ✅ Strengths:
@@ -1022,6 +1229,24 @@ Integrity: ✅ / ⚠️ [which rule fails: off-topic / scope creep / single conc
 ---
 
 [Repeat for all content sections]
+
+---
+
+📜 RECOMMENDED PAGE FLOW  (order serves the human arc; chunks serve the machines — see Recommended Page Flow section)
+  | # | Section | Disposition | Serves sub-query | Human goal | CTA after? |
+  |---|---|---|---|---|---|
+  | 1 | [Zone 1 / hero] | KEEP_IN_PLACE | [primary intent] | [answer + instant credibility] | |
+  | 2 | [section or NEW: name] | KEEP_IN_PLACE / MOVE / MERGE_INTO [target] / REPURPOSE / NEW | [sub-query] | [one persuasion job] | ✅ if applicable |
+  | … | | | | | |
+  | — | [cut sections listed last] | CUT | — | [why it doesn't belong] | |
+
+---
+
+🧪 VALIDATION PLAN
+  Prompt corpus: [10–20 prompts — list them, grouped by intent class: discovery / comparison / recommendation / factual / brand]
+  Engines: [≥3 — e.g. Google AI Mode, ChatGPT, Perplexity]
+  Protocol: run before rewrite ships and ~4 weeks after; record per prompt: domain cited? brand named? which competitor won?
+  First-party: enable Bing Webmaster Tools AI Performance report; watch server logs for OAI-SearchBot / ChatGPT-User / PerplexityBot / ClaudeBot.
 
 ---
 
@@ -1056,14 +1281,20 @@ The JSON appendix is the machine contract between this audit and downstream rewr
 - `intent_source`: `"OPERATOR"` | `"INTENT_ANALYZER"` | `"INFERRED"`
 - `commoditization_verdict`: `"NOT_COMMODITIZED"` | `"PARTIALLY_COMMODITIZED"` | `"COMMODITIZED"` | `"FULLY_COMMODITIZED_AI_SLOP"`
 - `protection_type`: `"AHPRA_HEDGING"` | `"LEGAL_DISCLAIMER"` | `"LEGAL_LOCATION"` | `"FDA_DISCLAIMER"` | `"FINANCIAL_DISCLOSURE"` | `"COMPLIANCE_OTHER"`
-- `check`: `"structural_fitness"` | `"information_density"` | `"extractability"` | `"entity_completeness"` | `"format_appropriateness"` | `"natural_language_quality"` | `"section_integrity"` | `"anchorable_statement"` | `"condition_preservation"` | `"dry"` | `"trust_signals"` | `"competitive_differentiation"` | `"commoditization"` | `"heading_hygiene"` | `"trapped_signal"`
-- `issue_type`: short SCREAMING_SNAKE_CASE token chosen from `MISSING_ANCHORABLE_STATEMENT` | `OFF_TOPIC_SECTION` | `SCOPE_CREEP` | `CONDITION_SEPARATED` | `UNRESOLVED_PRONOUN` | `FILLER_OPENER` | `SUBSTITUTION_TEST_FAILED` | `DRY_VIOLATION` | `MISSING_ENTITY_CREDENTIAL` | `H1_DECORATIVE` | `H1_UNMATCHABLE` | `MISSING_SEMANTIC_HEADINGS` | `TRAPPED_TRUST_SIGNAL` | `ANONYMOUS_TESTIMONIAL` | `VERIFY_BEFORE_PUBLISH` | `CONDITION_DUPLICATION_REQUIRED` | `INFORMATION_DENSITY_LOW` | `FORMAT_MISMATCH` | `INSUFFICIENT_DIFFERENTIATION` (extend only by appending new SCREAMING_SNAKE_CASE tokens; existing tokens are stable).
+- `check`: `"structural_fitness"` | `"information_density"` | `"extractability"` | `"entity_completeness"` | `"format_appropriateness"` | `"natural_language_quality"` | `"section_integrity"` | `"anchorable_statement"` | `"condition_preservation"` | `"dry"` | `"trust_signals"` | `"competitive_differentiation"` | `"commoditization"` | `"heading_hygiene"` | `"trapped_signal"` | `"fanout_coverage"` | `"authority_access"`
+- `issue_type`: short SCREAMING_SNAKE_CASE token chosen from `MISSING_ANCHORABLE_STATEMENT` | `OFF_TOPIC_SECTION` | `SCOPE_CREEP` | `CONDITION_SEPARATED` | `UNRESOLVED_PRONOUN` | `FILLER_OPENER` | `SUBSTITUTION_TEST_FAILED` | `DRY_VIOLATION` | `MISSING_ENTITY_CREDENTIAL` | `H1_DECORATIVE` | `H1_UNMATCHABLE` | `MISSING_SEMANTIC_HEADINGS` | `TRAPPED_TRUST_SIGNAL` | `ANONYMOUS_TESTIMONIAL` | `VERIFY_BEFORE_PUBLISH` | `CONDITION_DUPLICATION_REQUIRED` | `INFORMATION_DENSITY_LOW` | `FORMAT_MISMATCH` | `INSUFFICIENT_DIFFERENTIATION` | `GENERIC_HEADING` | `UNCOVERED_SUBQUERY` | `MISSING_SCHEMA_MARKUP` | `MISSING_AUTHOR_ATTRIBUTION` (extend only by appending new SCREAMING_SNAKE_CASE tokens; existing tokens are stable).
+- `fanout_coverage` verdicts: `"COVERED"` | `"PARTIAL"` | `"UNCOVERED"`
+- `fanout_coverage` subquery `source`: `"ENUMERATED"` | `"PAA_OBSERVED"` | `"OPERATOR"`
+- `recommended_home`: `"ZONE1_MIRROR"` | `"BODY_SECTION"` | `"FAQ_ENTRY"` | `"EXTEND_EXISTING_SECTION"` | `null` (already COVERED in the right home)
+- `rewrite_urgency` level: `"SEVERE"` | `"SUBSTANTIAL"` | `"MODERATE"` | `"LIGHT"`
+- `recommended_flow` disposition: `"KEEP_IN_PLACE"` | `"MOVE"` | `"MERGE_INTO"` | `"REPURPOSE"` | `"CUT"` | `"NEW"`
 
 ### Required top-level shape
 
 ```json
 {
-  "schema_version": "1.0",
+  "schema_version": "1.3",
+  "spec_version": "2.2",
   "audit_timestamp": "2026-05-10T10:00:00Z",
   "audit_metadata": {
     "source_url": "https://www.example.com/page",
@@ -1076,7 +1307,24 @@ The JSON appendix is the machine contract between this audit and downstream rewr
     "page_type": "blog",
     "page_length_chars": 4200,
     "page_length_band": "HEALTHY",
-    "estimated_grounding_coverage_pct": 66
+    "estimated_grounding_coverage_pct": 66,
+    "grounding_constant_provenance": "indicative — 2025-Q4 snapshot, single system"
+  },
+  "authority_access": {
+    "input_format": "markdown",
+    "onpage": {
+      "schema_types_found": null,
+      "author_byline_present": null,
+      "date_signals_present": null,
+      "note": "input was markdown — on-page markup not assessable; nulls mean NOT_ASSESSABLE, not absent"
+    },
+    "offpage_checklist": [
+      { "item": "ai_crawler_access_cdn_layer", "status": "NOT_VERIFIABLE_FROM_COPY" },
+      { "item": "server_side_rendering", "status": "NOT_VERIFIABLE_FROM_COPY" },
+      { "item": "server_log_ai_fetch_evidence", "status": "NOT_VERIFIABLE_FROM_COPY" },
+      { "item": "brand_mention_breadth", "status": "NOT_VERIFIABLE_FROM_COPY" },
+      { "item": "author_entity_online", "status": "NOT_VERIFIABLE_FROM_COPY" }
+    ]
   },
   "gate_diagnosis": {
     "G1_retrieval": { "issue_count": 2, "weighted_score": 4 },
@@ -1084,6 +1332,10 @@ The JSON appendix is the machine contract between this audit and downstream rewr
     "G3_citation":  { "issue_count": 4, "weighted_score": 6 },
     "dominant_gate": "G2",
     "bottleneck_summary": "Page surfaces but loses to competitors — generic claims, no unique angle, no specific outcomes data."
+  },
+  "rewrite_urgency": {
+    "level": "SEVERE",
+    "derivation": "5 CRITICAL findings + commoditization verdict FULLY_COMMODITIZED_AI_SLOP — highest matching row of the urgency table"
   },
   "zone_analysis": {
     "zone_1_chars": 840,
@@ -1094,7 +1346,9 @@ The JSON appendix is the machine contract between this audit and downstream rewr
   },
   "commoditization_check": {
     "whole_page_substitution_passes": false,
+    "substitutable_body_word_share_pct": 85,
     "unique_data_sentence_count": 1,
+    "unique_data_sentences_per_1000_words": 0.8,
     "unique_angle_present": false,
     "external_verifiable_trust_signal_count": 0,
     "ai_fingerprint_marker_count": 6,
@@ -1111,6 +1365,29 @@ The JSON appendix is the machine contract between this audit and downstream rewr
       "gap_reason": "page describes the concept generically but provides no anchorable statement that names Dr. Sattele's program AND distinguishes it"
     }
   ],
+  "fanout_coverage": {
+    "note": "reasoned estimate of the engine fan-out distribution — not engine telemetry",
+    "subqueries": [
+      {
+        "subquery": "how much does a medically supervised weight loss program cost",
+        "dimension": "cost",
+        "source": "ENUMERATED",
+        "coverage": "UNCOVERED",
+        "covering_section": null,
+        "recommended_home": "BODY_SECTION"
+      },
+      {
+        "subquery": "medically supervised weight loss vs GLP-1 injections alone",
+        "dimension": "comparison",
+        "source": "PAA_OBSERVED",
+        "coverage": "PARTIAL",
+        "covering_section": "Safety First: Why Physician Oversight Protects Your Health",
+        "recommended_home": "EXTEND_EXISTING_SECTION"
+      }
+    ],
+    "uncovered_count": 1,
+    "top_gaps_emitted_as_findings": 1
+  },
   "competitive_differentiation": {
     "what":            { "present": true,  "evidence": "medically supervised weight loss program" },
     "who":             { "present": true,  "evidence": "Dr. Sattele's Rapid Weight Loss Centers" },
@@ -1212,6 +1489,39 @@ The JSON appendix is the machine contract between this audit and downstream rewr
       "Do not strip the FDA disclaimer about Compounded Semaglutide.",
       "Do not invent specific patient outcome numbers (n, %, success rate) the page does not currently contain — use [DATA_NEEDED:] placeholders and the operator_fact_requests array.",
       "Do not soften AHPRA-style hedges to make claims read as more confident."
+    ],
+    "faq_plan": [
+      {
+        "question": "Is medically supervised weight loss covered by insurance?",
+        "answer_guidance": "40-80 words; name accepted providers if the operator supplies them, else [DATA_NEEDED:]",
+        "derived_from": "fanout:cost"
+      }
+    ],
+    "recommended_flow": [
+      {
+        "position": 1,
+        "section": "Hero / Zone 1",
+        "disposition": "KEEP_IN_PLACE",
+        "serves_subquery": "primary intent",
+        "human_goal": "answer the query and establish instant credibility (named MD, locations, price anchor)",
+        "cta_after": false
+      },
+      {
+        "position": 3,
+        "section": "NEW: Program Costs",
+        "disposition": "NEW",
+        "serves_subquery": "fanout:cost",
+        "human_goal": "let the reader self-select a program tier",
+        "cta_after": true
+      },
+      {
+        "position": null,
+        "section": "The Bottom Line: It's Not Just About Weight—It's About Health",
+        "disposition": "CUT",
+        "serves_subquery": null,
+        "human_goal": null,
+        "cta_after": false
+      }
     ]
   },
   "operator_fact_requests": [
@@ -1227,6 +1537,24 @@ The JSON appendix is the machine contract between this audit and downstream rewr
       "field": "Named protocol stages and any standardised testing protocol (e.g. fasting insulin, TSH panel, body composition method)",
       "reason": "Required for unique-angle commitment to break commoditization; the page implies these exist but does not name them."
     }
+  ],
+  "validation_plan": {
+    "prompt_corpus": [
+      { "prompt": "is medically supervised weight loss worth it compared to doing it myself?", "intent_class": "comparison", "derived_from": "primary" },
+      { "prompt": "how much should I expect to pay for a doctor-supervised weight loss program?", "intent_class": "factual", "derived_from": "fanout:cost" },
+      { "prompt": "best medical weight loss clinic near Florence SC", "intent_class": "discovery", "derived_from": "fanout:provider_selection" },
+      { "prompt": "is Dr. Sattele's Rapid Weight Loss Center legit?", "intent_class": "brand", "derived_from": "brand" }
+    ],
+    "engines_recommended": ["google_ai_mode", "chatgpt", "perplexity"],
+    "measurement_window_days": 28,
+    "kpis": ["domain_cited", "brand_named", "winning_competitor"]
+  },
+  "spec_feedback": [
+    {
+      "anchor": "H1 severity matrix — decorative-prefix row",
+      "observation": "optional, usually empty array — populate ONLY when a pinned calibration anchor forced a verdict that the evidence in this specific page strongly contradicts; the verdict in findings[] still follows the anchor",
+      "suggested_spec_change": "one sentence"
+    }
   ]
 }
 ```
@@ -1239,6 +1567,10 @@ The JSON appendix is the machine contract between this audit and downstream rewr
 4. The `rewrite` field is the literal string the writer pastes in. If the sentence should be deleted, use `"[DELETE]"` and explain in `rationale`.
 5. The `rewrite_brief.target_length_chars_min` and `_max` reflect the Page Length Bands table, scaled to the page type.
 6. Emit valid JSON. The block must parse with a standard `json.loads()` call without manual cleanup. Do not include comments. Do not use trailing commas. Do not use single quotes.
+7. **Compatibility contract.** Schema versions are strictly additive within the 1.x line: 1.2 added `rewrite_urgency`, `commoditization_check.substitutable_body_word_share_pct`, `commoditization_check.unique_data_sentences_per_1000_words`, `fanout_coverage.subqueries[].source`, `fanout_coverage.subqueries[].recommended_home`, and `rewrite_brief.faq_plan`; 1.3 adds `rewrite_brief.recommended_flow`. No existing field is renamed, re-typed, or removed, and no enum token is retired. Downstream consumers must ignore fields they don't recognise. `spec_version` identifies the audit methodology revision; `schema_version` identifies this JSON contract.
+8. **`spec_feedback` is telemetry, not verdict.** It is usually an empty array. Populate it only when a pinned calibration anchor forced a verdict the page's evidence strongly contradicts — and even then, the verdict in `findings[]` follows the anchor. Feedback accumulates across audits to drive spec revisions; it never changes the current audit's output.
+9. **`authority_access.offpage_checklist` items and `fanout_coverage` entries are not findings.** They never appear in `findings[]` and never count toward `gate_diagnosis` (the only exceptions: the up-to-3 `UNCOVERED_SUBQUERY` findings and, when raw HTML was supplied, `MISSING_SCHEMA_MARKUP` / `MISSING_AUTHOR_ATTRIBUTION`).
+10. **Disposition discipline.** A section whose `recommended_flow` disposition is `CUT` may carry only structural-justification findings (`OFF_TOPIC_SECTION`, `SCOPE_CREEP`, `DRY_VIOLATION`) and `TRAPPED_TRUST_SIGNAL` salvage findings — never sentence-level polish. `MERGE_INTO`/`REPURPOSE` sections carry the merge/repurpose finding (with its salvage list) and findings on surviving content only. Every existing section appears exactly once in `recommended_flow`; `NEW` entries must trace to an `UNCOVERED_SUBQUERY` finding or `faq_plan` item.
 
 ---
 
@@ -1288,6 +1620,10 @@ These rules are non-negotiable for cross-LLM consistency. Apply them before emit
     3. Count `findings[].gate` to derive `gate_diagnosis.G[1-3].issue_count`.
     4. ONLY THEN write the markdown gate-diagnosis header using the same numbers.
     The markdown gate header counts MUST equal the JSON `gate_diagnosis` counts MUST equal the per-gate count of `findings[]`. All three numbers come from the same source — the finalised findings array — so they cannot disagree without a bug. If they disagree, you wrote the markdown before the audit was finished.
+
+19. **The stage-one caveat, fan-out coverage, and validation plan are mandatory in every audit** — including clean pages. A page with zero findings still gets the 🛰️ authority block (so the operator knows what wasn't verified), the full fan-out coverage table (a clean page can still be missing sub-query coverage), and the 🧪 validation plan (a clean verdict is exactly the claim that most needs external checking). Omitting them because "the page passed" defeats their purpose.
+
+20. **Date-stamp every number that came from a dated constant.** Grounding coverage percentages, fan-out counts, overlap rates, and fingerprint-marker provenance all carry their snapshot dates in this spec — carry the date into the report line wherever the number appears. A number without its date reads as a measurement; with its date it reads correctly as a calibrated estimate.
 
 ---
 
@@ -1382,14 +1718,45 @@ Apply the matrix from Step 3 mechanically. Use these pinned verdicts as calibrat
 
 **Counter-example.** Tempting wrong rationale: "The H1 is the highest-weighted on-page heading, therefore any issue with it is IMPORTANT or CRITICAL by default." This conflates H1 IMPORTANCE-of-position with severity-of-this-specific-defect. A small recoverable defect on a high-weight element is still a small recoverable defect. Use the matrix row, not the heading's structural rank.
 
+### Example 9 — Commoditization: token uniqueness does not immunize a page
+*Calibrates: Section-weighted substitution (test 1), unique-data density (test 2), tie-break rule*
+
+**FAIL the substitution test (award the fail point).** A weight-loss service page names its practitioner, a trademarked diet-tracker app, and a branded cookbook — but its FAQ recycles 70-year-old public-domain protocol boilerplate every competitor also hosts, its "Why Choose Us" bullets are name-swappable ("convenient locations", "20 years of experience"), and its testimonials are generic praise. Roughly half the body words live in sections a competitor could host unmodified.
+*Why fail: the proprietary nouns are tokens, not distributed uniqueness. Swap the brand name and ~50% of the page reads as anyone's. ≥40% threshold met → fail point — regardless of how distinctive the other half is.*
+
+**FAIL the density test (award the fail point).** Six provider-specific data sentences on a 2,100-word page = 2.8 per 1,000 words.
+*Why fail: the same six sentences on a 900-word page would be dense (6.7/1,000 — pass). Length dilutes; the rate, not the count, is what an extractor experiences.*
+
+**Calibration anchor.** A page in this pattern — real proprietary entities present but the bulk of body words generic or boilerplate — is **PARTIALLY_COMMODITIZED**, not NOT_COMMODITIZED. The observed solo-auditor drift (2026-06) was scoring exactly this pattern as 0 fail points by letting whole-page token uniqueness pass test 1. Do not repeat it. When borderline, the tie-break rule applies: award the fail point.
+
+### Example 10 — Sub-query placement: body section vs FAQ entry
+*Calibrates: fan-out placement strategy, UNCOVERED_SUBQUERY rewrite fields*
+
+**BODY_SECTION.** Uncovered sub-query: "how much do dental implants cost in Perth" on an implants service page.
+*Why body: cost is decision-critical and needs a small table (single tooth / multiple / full arch, with the bone-graft condition). A 60-word FAQ answer loses to the competitor's pricing section. Rewrite field: "Add a body section 'Dental Implant Costs in Perth' with a 3-row pricing table and the bone-density condition inline."*
+
+**FAQ_ENTRY.** Uncovered sub-query: "can I get implants if I take blood thinners".
+*Why FAQ: edge-condition eligibility, answerable in one self-contained 50-word paragraph with the consult-first hedge. Rewrite field: "Add FAQ entry: 'Can I get dental implants while taking blood thinners?' — 40-80 words, name the medication-review step, hedge inline."*
+
+**Signal-splitting counter-example (do NOT do this).** The page already has a 300-word "Implant Costs" body section; do not ALSO recommend a "how much do implants cost" FAQ entry. One sub-query, one canonical home — flag the duplicate as `DRY_VIOLATION` instead.
+
+### When an anchor seems wrong — the escape valve
+
+The pinned verdicts above buy cross-LLM determinism, and that trade has a known failure mode: when the engines reweight signals, a frozen matrix keeps producing yesterday's answers. The resolution is a two-channel design:
+
+- **In the audit output, the anchor always wins.** Apply the matrix verdict exactly as pinned. Two auditors running the same page must produce the same severities — that contract is what makes the audit consumable downstream.
+- **In the `spec_feedback[]` array, your judgment is welcome.** If the evidence on this specific page strongly contradicts a pinned verdict, record the anchor, the observation, and a one-sentence suggested spec change. This costs nothing, changes nothing in the current audit, and gives the spec maintainer the drift signal a frozen matrix otherwise hides. Three audits flagging the same anchor is a revision trigger (see `MAINTENANCE.md` — operator-facing).
+
+Disagreement belongs in telemetry, not in verdicts. Both channels exist so neither has to do the other's job.
+
 ---
 
 ## Instructions
 
 1. **Resolve the primary search intent FIRST.** Use the highest-fidelity source available, in this order: (a) an upstream `page-intent-analyzer` report (record `intent_source: "INTENT_ANALYZER"` and copy the analyzer's confidence + anchor/drift sections); (b) an operator-supplied intent string (`OPERATOR`); (c) inferred from URL slug + H1 + title, only if the runner explicitly authorises inference (`INFERRED`). If none of the three is available, halt and emit `INTENT_REQUIRED`. Never silently fabricate the intent — the entire audit anchors to it.
-2. Read the full page before assessing anything. Detect industry mode (Step 1).
+2. Read the full page before assessing anything. Run Step 0 (authority & access: record on-page signals if HTML was supplied, nulls if not; emit the off-page checklist; never fake what you can't see). Detect industry mode (Step 1).
 3. Compute Zone 1 mechanically (Step 2): count visible body characters, take `min(0.20 × total, 2000)` rounded up to the next sentence end, and record the exact number.
-4. Run Steps 1–9 in order (mode, zone analysis + page-length band, flow/intents, differentiation + page-level commoditization, format, DRY, trust signals, anchorable + condition preservation, CTA detection) before section assessment. Page-level issues outrank sentence-level issues in priority.
+4. **Enumerate the fan-out set (Step 3) before judging any section's topical binding.** 8–14 sub-queries from the dimension table, phrased as real user queries. Every scope/cut/split verdict must name the sub-query (or absence of one) it rests on. Then run Steps 1–9 in order (mode, zone analysis + page-length band, flow/intents/fan-out coverage, differentiation + page-level commoditization, format, DRY, trust signals, anchorable + condition preservation, CTA detection) before section assessment. Page-level issues outrank sentence-level issues in priority.
 5. Identify and exclude CTA blocks before assessing sections (Step 9). Inspect each CTA for trapped trust signals; flag with `TRAPPED_TRUST_SIGNAL` if a unique signal is found.
 6. Label each content section as Zone 1 or Body. Assess each section against the three section integrity rules (topical binding, single concept, self-containment). When an upstream intent-analyzer report is supplied, use its `anchor_sections` / `drift_sections` to short-circuit the topical-binding assessment (anchors pass automatically; drifts fail automatically).
 7. For each section, list specific strengths (what to preserve) and specific issues (what to fix). Every issue names the gate it affects, the check it belongs to, and what the fix looks like. Categorise each issue as Critical, Important, or Minor using the severity guide — and apply the **healthcare/legal/financial auto-escalation rule** mechanically (numeric outcome claims without inline qualifying conditions in regulated mode → CRITICAL).
@@ -1402,6 +1769,12 @@ Apply the matrix from Step 3 mechanically. Use these pinned verdicts as calibrat
 14. The output is input for an LLM writer. Every finding must be specific enough that the writer can act on it without additional context. "Improve density" is not actionable. "Section X opener fails the 3-element filler test (0 of 3 elements present); delete the sentence and lead with the next fact" is actionable.
 15. Keep the tone professional and direct — this is a technical audit, not a critique.
 16. If the page-level Commoditization check returns `COMMODITIZED` or `FULLY_COMMODITIZED_AI_SLOP`, say so directly at the TOP of the markdown summary (above the gate diagnosis). The single highest-leverage fix is at the page level — the rewriter cannot fix commoditization with sentence-level tweaks.
+17. **Always emit the validation plan** (prompt corpus from the fan-out set, four intent classes plus brand prompts, ≥3 engines, before/after protocol). The audit's recommendations are predictions; the validation plan is how the operator finds out whether they came true. An audit without it is unfalsifiable.
+18. Use `spec_feedback[]` (usually empty) for any pinned anchor or dated constant that this page's evidence strongly contradicts — verdicts still follow the spec; the feedback is how the spec learns.
+19. **Compute `rewrite_urgency` mechanically** from the urgency table (Output Format section) after all findings are final, emit it as the first line after the 📋 header AND in the JSON `rewrite_urgency` block, and cite the trigger counts. It is derived, never judged — a report with CRITICAL findings must never read as healthy from its headline.
+20. **Every `UNCOVERED_SUBQUERY` finding names its placement.** Use the Step 3 placement strategy (`BODY_SECTION` / `FAQ_ENTRY` / `ZONE1_MIRROR` / `EXTEND_EXISTING_SECTION`) and put the placement plus format in the `rewrite` field. FAQ-routed questions also land in `rewrite_brief.faq_plan`.
+21. **Disposition before polish.** Assign every section's disposition (Step 10 triage table) BEFORE running the six checks. CUT sections get exactly one structural finding plus any trapped-signal salvage — no sentence flagging, no filler/pronoun/density/heading findings. MERGE/REPURPOSE sections get the salvage list, with polish only for content that survives. A finding is an implicit keep vote; do not cast it for a section that should die.
+22. **Always emit the recommended flow** (markdown 📜 table + `rewrite_brief.recommended_flow`): every existing section once with its disposition, NEW sections from BODY_SECTION-routed uncovered sub-queries at their arc position, one `human_goal` per entry, CTA placements marked. The findings are the parts list; the flow is the assembly sequence — a rewriter given findings without a flow will faithfully polish a page that's assembled wrong.
 
 ---
 
@@ -1420,6 +1793,9 @@ For content creators to verify before publishing. This is the minimum bar — no
 - [ ] At least one sentence per section is directly quotable — specific, self-contained, condition-preserving, and passes the substitution test
 - [ ] Two or more mentions of the same entity each add a NEW attribute (credential, location, technology, year, scope) — not just synonym cycling
 - [ ] Conditions and caveats share a sentence with the claims they qualify
-- [ ] The whole-page substitution test: replacing the brand name throughout breaks the page — it doesn't read as a generic article a competitor could host
+- [ ] The section-weighted substitution test: fewer than 40% of body words live in sections a competitor could host unmodified after a name-swap — proprietary nouns elsewhere don't count
 - [ ] The page identifies what it is, who it's for, what job it does, and what constraint it wins under — within a 3-sentence contiguous window
 - [ ] The page commits to a unique angle (named methodology, specific protocol, contrarian stance, specific case data) — not just "personalised" / "expert" generic claims
+- [ ] Each high-probability fan-out sub-query (cost, comparison, process, eligibility, risks, timeline…) has exactly one canonical home — decision-critical ones as labeled body sections, long-tail/edge-condition ones as tight FAQ entries (40–80 words); check the SERP's People Also Ask box for questions the enumeration missed
+- [ ] The live page is reachable by AI crawlers: body content present in server-rendered HTML (most AI crawlers don't execute JavaScript), CDN/WAF not blocking AI bots, no accidental blanket robots.txt disallow
+- [ ] You have a way to find out if any of this worked: a saved prompt list to re-run across AI engines after publishing

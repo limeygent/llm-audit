@@ -1,15 +1,32 @@
+> ⚠️ **DEPRECATED / RETIRED (2026-06-08).** The Mode B council orchestration in
+> this file is **no longer executed.** The agency-dashboard post-audit worker
+> (`scripts/run-post-audit.ts`) now orchestrates the council **in code** — it
+> builds the prompt bundle, runs one local Claude seat, and shells out to
+> `llm-council/council_cli.py` directly. There is no headless-Claude
+> orchestrator following this playbook anymore.
+>
+> Why it was retired: running this prose playbook via headless `claude --print`
+> was fragile (no reliable background-task completion in `--print` mode, so the
+> council call was killed mid-flight and the run was marked "done" over a
+> placeholder) and burned the Claude subscription quota twice per run
+> (orchestrator + a local seat). The code orchestrator removes both problems.
+>
+> `skill.md` (the audit methodology) is still live and is used by both the solo
+> auditor and the local council seat. This file is kept for historical
+> reference only — do not follow Mode B below.
+
 # Running the LLM Readability Audit
 
-This document tells a fresh Claude Code session (e.g. `claude -p "audit https://example.com"`) HOW to execute the audit. The methodology lives in `SKILL.md`; this doc is the orchestration playbook.
+This document tells a fresh Claude Code session (e.g. `claude -p "audit https://example.com"`) HOW to execute the audit. The methodology lives in `skill.md`; this doc is the orchestration playbook.
 
 ## Two execution modes
 
 ### Mode A — Solo (DEFAULT for all invocations)
-Apply `SKILL.md` directly to the supplied article body and emit the audit per its Output Format. Single-LLM, no council, no subagent, no `runs/` folder, no API calls beyond what your own session uses. Faster, cheaper, lower variance.
+Apply `skill.md` directly to the supplied article body and emit the audit per its Output Format. Single-LLM, no council, no subagent, no `runs/` folder, no API calls beyond what your own session uses. Faster, cheaper, lower variance.
 
 **This is what happens in `run-post-audit.ts` (the dashboard's WordPress audit worker)** and most `claude -p` invocations. It's the steady-state production path.
 
-This file (`RUNNING.md`) is **NOT relevant to Mode A**. If you're running solo, do not read this file — just apply SKILL.md.
+This file (`RUNNING.md`) is **NOT relevant to Mode A**. If you're running solo, do not read this file — just apply skill.md.
 
 ### Mode B — Council (opt-in, multi-LLM)
 A multi-LLM council (Opus subagent + 3 OpenRouter models: GLM-5, Mistral-medium-3-5, DeepSeek-v4-flash) produces 4 perspectives, a peer-reviewed ranking, and a chairman synthesis (Gemini 3.1 Pro). Slower (~3-5 min), costs ~$4.24/M tokens. Reserved for high-stakes audits where multi-LLM consensus justifies the time/cost.
@@ -59,7 +76,7 @@ Files that will end up in `${RUN_DIR}` by the time the run finishes:
 - `/Users/nomis/Desktop/codeprojects/llm-council/council_cli.py` exists and is executable
 - `OPENROUTER_API_KEY` is set in `/Users/nomis/Desktop/codeprojects/llm-council/.env`
 - `python3` available (system Python 3.9+ is fine for the CLI)
-- `/Users/nomis/.claude/skills/llm-audit/SKILL.md` exists
+- `/Users/nomis/.claude/skills/llm-audit/skill.md` exists
 
 If any prerequisite fails, fall back to Mode A and tell the operator at the end of the audit.
 
@@ -69,7 +86,7 @@ If any prerequisite fails, fall back to Mode A and tell the operator at the end 
   - Look for an upstream `page-intent-analyzer` JSON sidecar referenced by the operator
   - Otherwise infer from URL slug + H1 + title and mark `intent_source: "INFERRED"` in JSON
   - **Never silently fabricate** — if no signal exists, halt with `INTENT_REQUIRED`
-- **Industry mode**: detect per Step 1 of `SKILL.md` (HEALTHCARE / LEGAL / FINANCIAL / EDUCATIONAL / STANDARD)
+- **Industry mode**: detect per Step 1 of `skill.md` (HEALTHCARE / LEGAL / FINANCIAL / EDUCATIONAL / STANDARD)
 - **Page type**: blog / service / location / comparison / landing / emergency / educational
 
 ### Step 2 — Get the page content
@@ -114,9 +131,9 @@ OPERATOR-PROVIDED INFORMATION
 - Industry mode expected: <MODE>
 
 INSTRUCTIONS FOR THIS RUN
-1. Apply the SKILL.md exactly as written. Do not improvise sections.
+1. Apply the skill.md exactly as written. Do not improvise sections.
 2. Do not ask the operator any clarifying questions — the intent is provided above; proceed.
-3. Produce the full audit report in the format specified by the SKILL.md "Output Format" section, top to bottom.
+3. Produce the full audit report in the format specified by the skill.md "Output Format" section, top to bottom.
 4. After the markdown audit, emit the JSON appendix as specified, fenced as ```json. The JSON is mandatory.
 5. Do not write a preamble or closing summary. Do NOT wrap your response in any outer code fence (no leading ```markdown). Begin with "📋 LLM Readability Audit" and end at the closing ``` of the JSON fence.
 6. Do not include reasoning artifacts ("Correction:", "Withdrawing the flag", etc.) — silently revise if you change your mind, emit only the final audit.
@@ -125,10 +142,10 @@ INSTRUCTIONS FOR THIS RUN
 9. Findings parity check before emitting: markdown ALL ISSUES count == JSON `findings[]` length == sum of `gate_diagnosis.G[1-3].issue_count` (derive the latter from `findings[].gate`, do not hand-author).
 
 ================================================================================
-SKILL.md (the specification you must follow)
+skill.md (the specification you must follow)
 ================================================================================
 
-<contents of /Users/nomis/.claude/skills/llm-audit/SKILL.md>
+<contents of /Users/nomis/.claude/skills/llm-audit/skill.md>
 
 ================================================================================
 PAGE CONTENT (the article to audit)
@@ -141,7 +158,7 @@ Concretely:
 ```bash
 # Build prompt header (in your text generation, not bash)
 # Then:
-cat /Users/nomis/.claude/skills/llm-audit/SKILL.md >> ${RUN_DIR}/audit-prompt.txt
+cat /Users/nomis/.claude/skills/llm-audit/skill.md >> ${RUN_DIR}/audit-prompt.txt
 printf '\n\n%s\n\n' '================================================================================' >> ${RUN_DIR}/audit-prompt.txt
 printf '%s\n' 'PAGE CONTENT (the article to audit)' >> ${RUN_DIR}/audit-prompt.txt
 printf '%s\n\n' '================================================================================' >> ${RUN_DIR}/audit-prompt.txt
@@ -152,20 +169,22 @@ cat ${RUN_DIR}/audit-page.md >> ${RUN_DIR}/audit-prompt.txt
 
 **Critical**: do this in a single message with two tool calls so they run concurrently, not sequentially. Both run ~1–2 min; parallel keeps wall clock at ~2 min.
 
+**Both tool calls MUST be foreground (`run_in_background: false`).** This skill is run headless via `claude --print`, where background tasks do NOT deliver completion notifications back to the orchestrator — the turn would simply end and the background council call would be killed mid-flight, leaving `stage1-api.json` empty. Two foreground tool calls in a single message still execute concurrently, but the turn blocks until BOTH return, which is exactly what we need. Do NOT use `run_in_background: true` here.
+
 The Anthropic council seat is filled by an Agent-tool subagent. The subagent inherits the orchestrator session's Opus class — whatever your `claude -p` default is (today: latest Opus, e.g. 4.7). This keeps the workflow simple: as long as the operator's CLI default is the latest/most useful Opus, the council automatically benefits from any future upgrade with no code change. Operator does NOT need to specify a version.
 
 **Tool call A — Opus subagent**:
-- `Agent` tool with `subagent_type: "general-purpose"`, `run_in_background: true`
+- `Agent` tool with `subagent_type: "general-purpose"`, `run_in_background: false`
 - Prompt: full content of `${RUN_DIR}/audit-prompt.txt`
 - End the prompt with: "Save your final audit (markdown body + JSON appendix, exactly as specified) to ${RUN_DIR}/opus-stage1.md using the Write tool. Output 'DONE' to the conversation when saved. Do not output the audit body to the conversation."
 - Read your own system prompt to determine the actual version (e.g. "You are powered by the model named Opus 4.7") and use that for the injection label in Step 6 (e.g. `local/claude-opus-4-7`).
 
 **Tool call B — council stage 1 (OpenRouter, 3 models in parallel)**:
-- `Bash` tool with `run_in_background: true`
+- `Bash` tool with `run_in_background: false`
 - Command: `cd /Users/nomis/Desktop/codeprojects/llm-council && python3 council_cli.py --stage 1 --file ${RUN_DIR}/audit-prompt.txt > ${RUN_DIR}/stage1-api.json 2> ${RUN_DIR}/stage1-api.err`
 
-### Step 5 — Wait for BOTH notifications
-Both background tasks will send completion notifications. Do not poll. Do not proceed until both have arrived.
+### Step 5 — Both calls have returned
+Because both tool calls in Step 4 are foreground, the turn does not advance until both have completed — there is nothing to wait on. Before proceeding, confirm `${RUN_DIR}/opus-stage1.md` exists and `${RUN_DIR}/stage1-api.json` is non-empty. If `stage1-api.json` is empty, read `${RUN_DIR}/stage1-api.err` and surface the error rather than synthesising from a missing stage-1.
 
 ### Step 6 — Merge stage-1 results
 Replace `<MODEL_LABEL>` with the version of Opus your session is actually running (read it from your system prompt — e.g. `local/claude-opus-4-7` if you're running 4.7, `local/claude-opus-4-6` if you're running 4.6). Do not invent a label that doesn't match.
@@ -305,7 +324,7 @@ Append entries with `echo` or `printf` — keep them terse. Errors get an `ERROR
 
 | Path | Purpose |
 |---|---|
-| `/Users/nomis/.claude/skills/llm-audit/SKILL.md` | Methodology spec (auditor instructions) |
+| `/Users/nomis/.claude/skills/llm-audit/skill.md` | Methodology spec (auditor instructions) |
 | `/Users/nomis/.claude/skills/llm-audit/RUNNING.md` | This file (orchestration playbook) |
 | `/Users/nomis/.claude/skills/llm-audit/fine-tuning/` | Council artifacts from spec-tuning sessions |
 | `/Users/nomis/.claude/skills/llm-audit/runs/` | Per-run logs (one folder per audit, see below) |
@@ -319,7 +338,7 @@ Append entries with `echo` or `printf` — keep them terse. Errors get an `ERROR
 |---|---|
 | `manifest.json` | Run metadata: timestamp, URL, intent, models, timings, summary, exit status |
 | `final.md` | The synthesised chairman markdown returned to the operator |
-| `audit-prompt.txt` | Bundled prompt (SKILL.md + page + intent) |
+| `audit-prompt.txt` | Bundled prompt (skill.md + page + intent) |
 | `audit-page.md` | Cleaned page content with frontmatter |
 | `opus-stage1.md` | Opus subagent's audit output |
 | `stage1-api.json` | OpenRouter stage-1 results (3 models) |

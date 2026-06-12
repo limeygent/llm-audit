@@ -16,6 +16,12 @@ fine-tuning/
 # Generated audit run outputs
 runs/
 
+# Drift-canary test harness (fixtures, checker, baselines — not needed to run the skill)
+canary/
+
+# Premortem analysis (design work product, local only)
+PREMORTEM.md
+
 # Leftover scripts from unrelated dental/geo project (not referenced by skill.md or RUNNING.md)
 extract.py
 push_geo_blocks.py
