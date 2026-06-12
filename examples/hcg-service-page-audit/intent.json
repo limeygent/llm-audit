@@ -1,0 +1,36 @@
+{
+  "source": "https://www.example-weightloss-clinic.com/hcg-diet/",
+  "title": "HCG Injections for Weight Loss - Lose Belly Fat Fast, Target Stubborn Fat, Doctor Supervised | Rapid Weight Loss",
+  "discovered_intent": {
+    "primary": {
+      "observable": "hcg injections for weight loss",
+      "inferred": { "type": "commercial-investigation", "task": "Decide whether a doctor-supervised HCG injection program is a safe, legitimate way to lose stubborn belly fat, and whether this clinic is credible enough to book a consultation with." },
+      "hidden": "Frustration after repeated failed diet attempts, paired with skepticism; the reader needs medical-legitimacy reassurance that HCG is safe and real before committing."
+    },
+    "secondary": null,
+    "author_intent_only": false
+  },
+  "primary_objective": "Persuade and qualify readers who have repeatedly failed at dieting and are evaluating whether a medically supervised HCG injection program can finally shift stubborn belly fat, building enough trust in Dr. Hartwell's clinic to book a free consultation.",
+  "anchor_sections": [
+    { "heading": "Lose Weight with HCG:", "why_serves": "States what HCG offers, who it is for, and how it is purchased; opens the investigation." },
+    { "heading": "HCG Helps With Weight Loss", "why_serves": "Mechanism explanation answering the core skeptic question, does this actually work." },
+    { "heading": "How Our Weight Loss Program Works", "why_serves": "Shows what signing up involves (consultation, medications, follow-ups); de-risks the decision." },
+    { "heading": "Program Options", "why_serves": "Option comparison (Rapid + HCG / Standard + HCG / HCG Only), the heart of a commercial investigation." },
+    { "heading": "Rapid Weight Loss Medications", "why_serves": "Situates HCG against Phentermine and B12/Lipotropics so the reader understands the clinic's toolkit." },
+    { "heading": "Our Success Stories", "why_serves": "Social proof serving the trust driver." },
+    { "heading": "Follow Your Program Between Office Visits", "why_serves": "Addresses the accountability concern of a reader who has failed solo dieting before." },
+    { "heading": "Meet Dr. Hartwell and the Rapid Weight Loss Team", "why_serves": "Medical-legitimacy reassurance; the MD and NP entries do the work, the three administrative staff dilute it." },
+    { "heading": "Why Choose Us?", "why_serves": "Differentiation bullets that directly serve provider evaluation." },
+    { "heading": "What Our Patients Say About Our Program", "why_serves": "Trust reinforcement." },
+    { "heading": "Frequently Asked Questions About HCG", "why_serves": "Safety, efficacy, and expectation questions; the densest answer surface for the investigation." },
+    { "heading": "North Shoreline / Riverton / Bayside", "why_serves": "Answers whether the reader can actually do this nearby." }
+  ],
+  "drift_sections": [
+    { "heading": "Follow Your Program Between Visits", "why_drifts": "Verbatim duplicate of the preceding app section (responsive page-builder artifact); adds nothing the first copy does not." },
+    { "heading": "FREE When You Join! (Members Area)", "why_drifts": "Membership-perk promotion serving the author's retention upsell, not the evaluating reader's decision." },
+    { "heading": "Mara's Cookbook / Weight Loss Recipes block", "why_drifts": "Feature marketing that gestures at the reader's real question (what will I actually eat on this program?) without answering it; repurpose into a diet-structure answer rather than cutting." },
+    { "heading": "Start Your Weight Loss Journey Today!", "why_drifts": "Pure CTA interstitial; conversion furniture rather than an intent-serving section." }
+  ],
+  "confidence": "medium",
+  "confidence_reason": "Primary intent clearly recoverable (H1, body focus, and CTAs align on evaluating/booking the HCG program), but the H1 promises narrower than the body delivers and four sections drift, two of them duplicates."
+}
