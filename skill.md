@@ -246,6 +246,7 @@ Three levels of drift:
 - **In scope:** The section answers the primary intent or any enumerated fan-out sub-query. "What do dental implants cost?" on a page serving "dental implants Westminster" — cost is a near-universal fan-out dimension. Keep it as a labeled section; assess it on content quality.
 - **Oversized in-scope section (rebalance, don't amputate):** The section answers a fan-out sub-query but has grown to dominate the page — it exceeds 250 words AND more than ~40% of the page's total body words. A 1,200-word comparison inside a 2,800-word implants page is crowding out the other sub-queries. **Flag as `SCOPE_CREEP` with a rebalance instruction:** compress to a focused answer (a comparison table plus a short paragraph usually suffices), or split it out *while retaining a 100–150-word summary section on-page* so the page still covers that sub-query. Never recommend removing the sub-query coverage entirely.
 - **Off-topic:** The section answers a query that is in neither the primary intent nor the fan-out set. "All About Westminster, WA" on a dental implants page — suburb tourism facts are not a sub-query any implant fan-out generates. **Flag as off-topic** — recommend removing or replacing entirely.
+- **Sibling-service leak (specific-service pages):** The section's pivot entity is a *different* service the same business sells — a phentermine/semaglutide medication menu on the HCG page, a teeth-whitening section on the implants page. This is creep even though it looks commercially adjacent: in a hub-and-spoke architecture the cross-service comparison is the **hub's** canonical job, and a spoke hosting it splits the site's signal against its own hub while diluting this page's section-weighted density. **Flag as `CLUSTER_LEAK` (IMPORTANT, G2)**; disposition `CUT`, or `MERGE_INTO` a 2–4 sentence this-service-anchored paragraph that links to the hub and sibling pages. The three-rule test for sibling-service references: (1) **program-inclusion mentions are fine** — components of THIS page's offer ("weekly B12 shots are included"); (2) **purchase-compatibility FAQs are fine** ("can I add HCG to semaglutide" is a question this page's buyer asks); (3) **cross-service comparison sections, menus, or tables route to the hub** — a short anchored paragraph plus links replaces them. Removing ALL sibling mentions is over-correction; tightness means one canonical owner per comparison, not zero references.
 
 **The split test (mechanical, fan-out-aware):** Count the words in the section, then check the section's query against the Step 3 fan-out set:
 
@@ -375,6 +376,7 @@ One honest caveat to carry into the report: fan-out is partially personalized (s
 3. Record the full set in the JSON `fanout_coverage.subqueries[]`, each with its `source`, a coverage verdict — `COVERED` (a section gives an extractable answer), `PARTIAL` (mentioned but no self-contained answer), or `UNCOVERED` (absent) — the covering section's name, and a `recommended_home` (see placement strategy below).
 4. **Uncovered sub-queries are the inverse of scope creep** — they are the content the page is silently losing to competitors in fan-out retrieval. Emit a finding (`UNCOVERED_SUBQUERY`, IMPORTANT, G1) for each of the **up to 3 highest-value gaps** (judge value by commercial proximity to the primary intent; PAA-confirmed gaps outrank enumeration-only gaps); list any further gaps in `fanout_coverage` only, so the findings list stays actionable. Feed all gaps into `rewrite_brief`. Every `UNCOVERED_SUBQUERY` finding's `rewrite` field must name the placement and format — "add an FAQ entry: *How much does X cost?* — 60-word answer with price range and condition" or "add a body section with a 3-option pricing table" — never a placement-less "add coverage".
 5. The fan-out set is a reasoned estimate, not engine telemetry — say so in the report. Its job is to make coverage and scope verdicts auditable: every keep/cut/add recommendation names the sub-query it serves.
+6. **Specific-service (spoke) pages enumerate around their single service.** The comparison dimension is phrased from THIS service's standpoint ("HCG vs alternatives for belly fat"), never as the cross-service menu ("which of our four medications is right for me") — that query belongs to the hub. When the operator supplies **site context** (e.g. "Hub: /weight-loss-programs/; sibling spokes: phentermine, B12, semaglutide"), record it in `audit_metadata.site_context` and route hub-owned sub-queries `LINK_TO_SIBLING`. Without site context, apply the default heuristic: a single-service page never hosts the cross-service comparison — flag the gap as a sub-query whose home is "the site's hub page (verify it exists)" and note the assumption in the report.
 
 ### Placement strategy — routing sub-queries to homes
 
@@ -386,6 +388,7 @@ Engines retrieve chunks, not pages, so "where should this answer live" is a rout
 | `FAQ_ENTRY` | Answerable in one tight, self-contained paragraph (40–80 words): logistics, compatibility, reassurance, edge conditions, variant phrasings | The question heading IS the G1 query match, and a short self-contained answer is maximum G3 extractability; the spec already assesses each FAQ Q&A pair as its own micro-section |
 | `ZONE1_MIRROR` | The sub-query is already answered in Body but it is the primary intent or a top decision driver | First-passage bias (~44% of ChatGPT citations from the first 30% of the page, dated 2026) — mirror the atomic facts, don't move the section |
 | `EXTEND_EXISTING_SECTION` | An existing section PARTIALLY covers it and one or two added sentences complete the answer | Cheaper than a new chunk; avoids signal splitting |
+| `LINK_TO_SIBLING` | The sub-query's canonical home is the hub or a sibling spoke in the site's cluster (supplied via site context, or evident because this is a single-service spoke and the sub-query pivots on a different service) | A summary-plus-link serves the reader without competing against the site's own canonical page; hosting full coverage here is site-level signal splitting against your own hub |
 
 Two routing rules:
 
@@ -1282,10 +1285,10 @@ The JSON appendix is the machine contract between this audit and downstream rewr
 - `commoditization_verdict`: `"NOT_COMMODITIZED"` | `"PARTIALLY_COMMODITIZED"` | `"COMMODITIZED"` | `"FULLY_COMMODITIZED_AI_SLOP"`
 - `protection_type`: `"AHPRA_HEDGING"` | `"LEGAL_DISCLAIMER"` | `"LEGAL_LOCATION"` | `"FDA_DISCLAIMER"` | `"FINANCIAL_DISCLOSURE"` | `"COMPLIANCE_OTHER"`
 - `check`: `"structural_fitness"` | `"information_density"` | `"extractability"` | `"entity_completeness"` | `"format_appropriateness"` | `"natural_language_quality"` | `"section_integrity"` | `"anchorable_statement"` | `"condition_preservation"` | `"dry"` | `"trust_signals"` | `"competitive_differentiation"` | `"commoditization"` | `"heading_hygiene"` | `"trapped_signal"` | `"fanout_coverage"` | `"authority_access"`
-- `issue_type`: short SCREAMING_SNAKE_CASE token chosen from `MISSING_ANCHORABLE_STATEMENT` | `OFF_TOPIC_SECTION` | `SCOPE_CREEP` | `CONDITION_SEPARATED` | `UNRESOLVED_PRONOUN` | `FILLER_OPENER` | `SUBSTITUTION_TEST_FAILED` | `DRY_VIOLATION` | `MISSING_ENTITY_CREDENTIAL` | `H1_DECORATIVE` | `H1_UNMATCHABLE` | `MISSING_SEMANTIC_HEADINGS` | `TRAPPED_TRUST_SIGNAL` | `ANONYMOUS_TESTIMONIAL` | `VERIFY_BEFORE_PUBLISH` | `CONDITION_DUPLICATION_REQUIRED` | `INFORMATION_DENSITY_LOW` | `FORMAT_MISMATCH` | `INSUFFICIENT_DIFFERENTIATION` | `GENERIC_HEADING` | `UNCOVERED_SUBQUERY` | `MISSING_SCHEMA_MARKUP` | `MISSING_AUTHOR_ATTRIBUTION` (extend only by appending new SCREAMING_SNAKE_CASE tokens; existing tokens are stable).
+- `issue_type`: short SCREAMING_SNAKE_CASE token chosen from `MISSING_ANCHORABLE_STATEMENT` | `OFF_TOPIC_SECTION` | `SCOPE_CREEP` | `CONDITION_SEPARATED` | `UNRESOLVED_PRONOUN` | `FILLER_OPENER` | `SUBSTITUTION_TEST_FAILED` | `DRY_VIOLATION` | `MISSING_ENTITY_CREDENTIAL` | `H1_DECORATIVE` | `H1_UNMATCHABLE` | `MISSING_SEMANTIC_HEADINGS` | `TRAPPED_TRUST_SIGNAL` | `ANONYMOUS_TESTIMONIAL` | `VERIFY_BEFORE_PUBLISH` | `CONDITION_DUPLICATION_REQUIRED` | `INFORMATION_DENSITY_LOW` | `FORMAT_MISMATCH` | `INSUFFICIENT_DIFFERENTIATION` | `GENERIC_HEADING` | `UNCOVERED_SUBQUERY` | `MISSING_SCHEMA_MARKUP` | `MISSING_AUTHOR_ATTRIBUTION` | `CLUSTER_LEAK` (extend only by appending new SCREAMING_SNAKE_CASE tokens; existing tokens are stable).
 - `fanout_coverage` verdicts: `"COVERED"` | `"PARTIAL"` | `"UNCOVERED"`
 - `fanout_coverage` subquery `source`: `"ENUMERATED"` | `"PAA_OBSERVED"` | `"OPERATOR"`
-- `recommended_home`: `"ZONE1_MIRROR"` | `"BODY_SECTION"` | `"FAQ_ENTRY"` | `"EXTEND_EXISTING_SECTION"` | `null` (already COVERED in the right home)
+- `recommended_home`: `"ZONE1_MIRROR"` | `"BODY_SECTION"` | `"FAQ_ENTRY"` | `"EXTEND_EXISTING_SECTION"` | `"LINK_TO_SIBLING"` | `null` (already COVERED in the right home)
 - `rewrite_urgency` level: `"SEVERE"` | `"SUBSTANTIAL"` | `"MODERATE"` | `"LIGHT"`
 - `recommended_flow` disposition: `"KEEP_IN_PLACE"` | `"MOVE"` | `"MERGE_INTO"` | `"REPURPOSE"` | `"CUT"` | `"NEW"`
 
@@ -1293,8 +1296,8 @@ The JSON appendix is the machine contract between this audit and downstream rewr
 
 ```json
 {
-  "schema_version": "1.3",
-  "spec_version": "2.2",
+  "schema_version": "1.4",
+  "spec_version": "2.3",
   "audit_timestamp": "2026-05-10T10:00:00Z",
   "audit_metadata": {
     "source_url": "https://www.example.com/page",
@@ -1308,7 +1311,13 @@ The JSON appendix is the machine contract between this audit and downstream rewr
     "page_length_chars": 4200,
     "page_length_band": "HEALTHY",
     "estimated_grounding_coverage_pct": 66,
-    "grounding_constant_provenance": "indicative — 2025-Q4 snapshot, single system"
+    "grounding_constant_provenance": "indicative — 2025-Q4 snapshot, single system",
+    "site_context": {
+      "supplied_by_operator": true,
+      "page_role": "spoke",
+      "hub": "/weight-loss-programs/",
+      "sibling_spokes": ["phentermine", "b12-lipotropic-injections", "semaglutide"]
+    }
   },
   "authority_access": {
     "input_format": "markdown",
@@ -1567,7 +1576,7 @@ The JSON appendix is the machine contract between this audit and downstream rewr
 4. The `rewrite` field is the literal string the writer pastes in. If the sentence should be deleted, use `"[DELETE]"` and explain in `rationale`.
 5. The `rewrite_brief.target_length_chars_min` and `_max` reflect the Page Length Bands table, scaled to the page type.
 6. Emit valid JSON. The block must parse with a standard `json.loads()` call without manual cleanup. Do not include comments. Do not use trailing commas. Do not use single quotes.
-7. **Compatibility contract.** Schema versions are strictly additive within the 1.x line: 1.2 added `rewrite_urgency`, `commoditization_check.substitutable_body_word_share_pct`, `commoditization_check.unique_data_sentences_per_1000_words`, `fanout_coverage.subqueries[].source`, `fanout_coverage.subqueries[].recommended_home`, and `rewrite_brief.faq_plan`; 1.3 adds `rewrite_brief.recommended_flow`. No existing field is renamed, re-typed, or removed, and no enum token is retired. Downstream consumers must ignore fields they don't recognise. `spec_version` identifies the audit methodology revision; `schema_version` identifies this JSON contract.
+7. **Compatibility contract.** Schema versions are strictly additive within the 1.x line: 1.2 added `rewrite_urgency`, `commoditization_check.substitutable_body_word_share_pct`, `commoditization_check.unique_data_sentences_per_1000_words`, `fanout_coverage.subqueries[].source`, `fanout_coverage.subqueries[].recommended_home`, and `rewrite_brief.faq_plan`; 1.3 adds `rewrite_brief.recommended_flow`; 1.4 adds `audit_metadata.site_context` (null when no site context was supplied) plus the `CLUSTER_LEAK` issue_type and `LINK_TO_SIBLING` recommended_home tokens. No existing field is renamed, re-typed, or removed, and no enum token is retired. Downstream consumers must ignore fields they don't recognise. `spec_version` identifies the audit methodology revision; `schema_version` identifies this JSON contract.
 8. **`spec_feedback` is telemetry, not verdict.** It is usually an empty array. Populate it only when a pinned calibration anchor forced a verdict the page's evidence strongly contradicts — and even then, the verdict in `findings[]` follows the anchor. Feedback accumulates across audits to drive spec revisions; it never changes the current audit's output.
 9. **`authority_access.offpage_checklist` items and `fanout_coverage` entries are not findings.** They never appear in `findings[]` and never count toward `gate_diagnosis` (the only exceptions: the up-to-3 `UNCOVERED_SUBQUERY` findings and, when raw HTML was supplied, `MISSING_SCHEMA_MARKUP` / `MISSING_AUTHOR_ATTRIBUTION`).
 10. **Disposition discipline.** A section whose `recommended_flow` disposition is `CUT` may carry only structural-justification findings (`OFF_TOPIC_SECTION`, `SCOPE_CREEP`, `DRY_VIOLATION`) and `TRAPPED_TRUST_SIGNAL` salvage findings — never sentence-level polish. `MERGE_INTO`/`REPURPOSE` sections carry the merge/repurpose finding (with its salvage list) and findings on surviving content only. Every existing section appears exactly once in `recommended_flow`; `NEW` entries must trace to an `UNCOVERED_SUBQUERY` finding or `faq_plan` item.
@@ -1740,6 +1749,22 @@ Apply the matrix from Step 3 mechanically. Use these pinned verdicts as calibrat
 
 **Signal-splitting counter-example (do NOT do this).** The page already has a 300-word "Implant Costs" body section; do not ALSO recommend a "how much do implants cost" FAQ entry. One sub-query, one canonical home — flag the duplicate as `DRY_VIOLATION` instead.
 
+### Example 11 — Cluster Leak vs Legitimate Sibling Reference (spoke pages)
+*Calibrates: sibling-service leak test, LINK_TO_SIBLING routing, scope guard*
+
+Page: HCG service page; the business also sells Phentermine, Semaglutide, and B12 programs (hub-and-spoke cluster).
+
+**FLAG as CLUSTER_LEAK.** A "Weight Loss Medications We Prescribe" section with a 3-row comparison table (Phentermine / HCG / B12: what it does, how it's taken, which program).
+*Why flag: the section's job is "which medication is right for me" — the hub's primary intent. Hosting it on the spoke competes with the site's own hub for the cross-service comparison sub-queries and dilutes the spoke's density. Disposition: MERGE_INTO a 2–4 sentence HCG-anchored paragraph ("HCG is the track built for stubborn belly fat; the Rapid and Standard programs already include Phentermine and B12...") ending in links to the hub and sibling pages.*
+
+**Do NOT flag.** "Weekly B12/Lipotropic injections are included in both programs" inside the Program Options inclusion lists.
+*Why fine: a component of THIS page's offer — product feature, not sibling coverage.*
+
+**Do NOT flag.** FAQ: "Can I add HCG if I'm doing the Rapid or Standard Program with Semaglutide?"
+*Why fine: a purchase-compatibility question this page's buyer asks. The pivot entity is still HCG.*
+
+**Counter-example (do NOT over-correct).** Stripping every mention of sibling treatments from the spoke. Tightness means one canonical owner per comparison, not zero sibling references — inclusions and compatibility answers are part of this service's story.
+
 ### When an anchor seems wrong — the escape valve
 
 The pinned verdicts above buy cross-LLM determinism, and that trade has a known failure mode: when the engines reweight signals, a frozen matrix keeps producing yesterday's answers. The resolution is a two-channel design:
@@ -1775,6 +1800,8 @@ Disagreement belongs in telemetry, not in verdicts. Both channels exist so neith
 20. **Every `UNCOVERED_SUBQUERY` finding names its placement.** Use the Step 3 placement strategy (`BODY_SECTION` / `FAQ_ENTRY` / `ZONE1_MIRROR` / `EXTEND_EXISTING_SECTION`) and put the placement plus format in the `rewrite` field. FAQ-routed questions also land in `rewrite_brief.faq_plan`.
 21. **Disposition before polish.** Assign every section's disposition (Step 10 triage table) BEFORE running the six checks. CUT sections get exactly one structural finding plus any trapped-signal salvage — no sentence flagging, no filler/pronoun/density/heading findings. MERGE/REPURPOSE sections get the salvage list, with polish only for content that survives. A finding is an implicit keep vote; do not cast it for a section that should die.
 22. **Always emit the recommended flow** (markdown 📜 table + `rewrite_brief.recommended_flow`): every existing section once with its disposition, NEW sections from BODY_SECTION-routed uncovered sub-queries at their arc position, one `human_goal` per entry, CTA placements marked. The findings are the parts list; the flow is the assembly sequence — a rewriter given findings without a flow will faithfully polish a page that's assembled wrong.
+23. **Spoke pages ship with a scope guard.** On a specific-service page, the writer's briefing must make tightness mechanical: any `CLUSTER_LEAK` section appears in `recommended_flow` as `CUT` or `MERGE_INTO` a link paragraph; every NEW section serves THIS service's sub-queries only; and `rewrite_brief.do_not_do` includes an explicit guard such as "Do not add cross-service comparison content (medication menus, sibling-treatment tables) — the hub page owns those queries; reference siblings only as program inclusions, compatibility FAQs, or a short linked paragraph." A rewriter following the brief should be unable to reintroduce the leak.
+24. **Licensed clinicians only in healthcare team sections.** In HEALTHCARE mode (and the equivalent in LEGAL/FINANCIAL: licensed practitioners only), the rewrite brief must instruct the writer that practitioner/team sections name ONLY licensed professionals: the supervising physician leads (certifying board + licence number, `[DATA_NEEDED:]` if absent), and licensed clinicians who actually deliver care (NP, PA, RN) are included with their credential and role in the care pathway — they substantiate the supervision claim. Non-clinical staff (business, practice, office managers) are omitted from the page: on a YMYL page every named person either carries a verifiable clinical credential or dilutes the section's trust density. Person-branded *product* names ("Lori's Cookbook") are fine in inclusion lists — naming a product is not presenting a person as medical staff. Emit this as a `do_not_do` entry (e.g. "Do not name non-clinical staff in the team section") whenever the source page mixes clinical and non-clinical personnel.
 
 ---
 
