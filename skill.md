@@ -366,7 +366,7 @@ One honest caveat to carry into the report: fan-out is partially personalized (s
 | Eligibility / suitability | "who is suitable for dental implants jawbone density" |
 | Risk / safety / pain | "do dental implants hurt what are the risks" |
 | Provider selection | "how to choose an implant dentist near Westminster" |
-| Location / availability | "dental implants Westminster WA" |
+| Location / availability | "dental implants Westminster WA" (for a multi-location regional business on an evergreen page, phrase around the region/metro, not a branch-city list — the brief routes specific addresses to the canonical locations page; a single-location business uses its city) |
 | Aftercare / longevity | "how long do dental implants last how to care for them" |
 
 **Rules:**
