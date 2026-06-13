@@ -26,6 +26,22 @@ just bumping the date.
 | 9 | Brand-mention correlation (branded mentions ρ≈0.66 ≫ backlinks ρ≈0.22; news placements r≈0.07) | Step 0, entity corroboration row | Ahrefs 75K-brand study 2025 + Seer Interactive | 2025 | 2026-12 | Correlational, not causal — but directionally robust across two independent shops |
 | 10 | Schema null result (no citation uplift, any platform; AIO −4.6%) + llms.txt dead (0.1% of bot visits) | Step 0a + 0b | Ahrefs diff-in-diff 2026-05; OtterlyAI log study; Google/Mueller official statements | 2026-05 | 2027-06 | Re-check if OpenAI/Perplexity ever announce schema or llms.txt consumption |
 
+## Tooling — derived-field normalizer
+
+`scripts/normalize_audit.py` recomputes the **derived tally fields** of an audit
+from the authoritative `findings[]`: `gate_diagnosis.*.issue_count` (+ sum), the
+markdown 🚦 gate-diagnosis numbers, and the `rewrite_urgency.level`. Run it
+immediately after an audit is emitted and before `canary/check_invariants.py`.
+Rationale: every contract failure seen in production (2026-06-12 multi-page run,
+3 of 4 audits) was an issue_count/sum mismatch — the model itemised findings
+correctly but mis-tallied the totals. Counting is mechanical; the normalizer
+removes that whole failure class. It deliberately does NOT recompute
+`weighted_score`/`dominant_gate` (those need each finding's Zone-1 vs Body
+status, which is not recoverable from the JSON — the first content section often
+has a topical heading, not a "Zone 1" label); it will take those over too if and
+when every finding carries an explicit `zone` field. It refuses to run when
+`findings[]` and the markdown ALL ISSUES count disagree (a real authoring error).
+
 ## Refresh procedure
 
 1. Re-source the constant (vendor docs for crawler names; latest replication
